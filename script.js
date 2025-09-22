@@ -5,7 +5,7 @@ document.getElementById("darkToggle").onclick = () => {
   document.documentElement.setAttribute("data-theme", next);
 };
 
-// 🧠 Career Quiz Logic (10 questions)
+// 🧠 Career Quiz Logic
 document.getElementById("quizForm").onsubmit = function(e) {
   e.preventDefault();
   const form = new FormData(e.target);
@@ -39,6 +39,7 @@ function renderPosts(data = posts) {
 
   data.forEach((post, index) => {
     const div = document.createElement("div");
+    div.classList.add("post-card", "animate__animated", "animate__fadeInUp");
     div.innerHTML = `
       <h3>${post.title} (${post.stream})</h3>
       <p>${post.content}</p>
