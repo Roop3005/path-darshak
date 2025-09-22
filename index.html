@@ -3,65 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<link rel="icon" href="C:\Users\ROOPRAJ\Downloads\WhatsApp Image 2025-09-19 at 15.06.59_37552cd5.jpg">
+  <link rel="icon" href="C:\Users\ROOPRAJ\Downloads\WhatsApp Image 2025-09-19 at 15.06.59_37552cd5.jpg">
   <title>Path Pradarshak</title>
   <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
 
   <!-- 🌙 Header -->
-  <header class="header-bar">
+  <header class="header-bar animate__animated animate__fadeInDown">
     <h1 class="center-title">Path Pradarshak</h1>
     <button id="darkToggle">🌙</button>
   </header>
 
   <!-- ✍️ Typing animation -->
-  <div class="typing-container">
+  <div class="typing-container animate__animated animate__fadeInUp animate__delay-1s">
     <h3 class="typing-text">Enjoy your time here!!</h3>
   </div>
 
   <!-- 🧠 Career Quiz -->
-  <section id="quiz">
+  <section id="quiz" class="animate__animated animate__fadeInUp animate__delay-2s">
     <h2>Career Quiz</h2>
     <form id="quizForm">
-      <!-- 10 questions -->
       <label>Do you enjoy solving math problems?</label>
       <select name="q1"><option value="Science">Yes</option><option value="Arts">No</option></select>
-
       <label>Are you interested in business and finance?</label>
       <select name="q2"><option value="Commerce">Yes</option><option value="Arts">No</option></select>
-
       <label>Do you like writing or public speaking?</label>
       <select name="q3"><option value="Arts">Yes</option><option value="Science">No</option></select>
-
       <label>Do you enjoy conducting experiments or working in labs?</label>
       <select name="q4"><option value="Science">Yes</option><option value="Arts">No</option></select>
-
       <label>Are you curious about how markets and economies work?</label>
       <select name="q5"><option value="Commerce">Yes</option><option value="Arts">No</option></select>
-
       <label>Do you enjoy drawing, painting, or designing?</label>
       <select name="q6"><option value="Arts">Yes</option><option value="Science">No</option></select>
-
       <label>Do you like solving logical puzzles or coding?</label>
       <select name="q7"><option value="Science">Yes</option><option value="Arts">No</option></select>
-
       <label>Are you interested in entrepreneurship or startups?</label>
       <select name="q8"><option value="Commerce">Yes</option><option value="Arts">No</option></select>
-
       <label>Do you enjoy reading literature or analyzing films?</label>
       <select name="q9"><option value="Arts">Yes</option><option value="Science">No</option></select>
-
       <label>Do you like working with data and statistics?</label>
       <select name="q10"><option value="Commerce">Yes</option><option value="Arts">No</option></select>
-
       <button type="submit">Submit</button>
     </form>
     <p id="streamResult"></p>
   </section>
 
   <!-- 📝 Post Creation -->
-  <section id="createPost">
+  <section id="createPost" class="animate__animated animate__fadeInUp animate__delay-3s">
     <h2>Create a Post</h2>
     <input type="text" id="postTitle" placeholder="Post Title"/>
     <textarea id="postContent" placeholder="Post Content"></textarea>
@@ -74,7 +64,7 @@
   </section>
 
   <!-- 🔍 Search & Filter -->
-  <section id="search">
+  <section id="search" class="animate__animated animate__fadeInUp animate__delay-4s">
     <input type="text" id="searchInput" placeholder="Search posts..."/>
     <button onclick="searchPosts()">Search</button>
     <select id="filterStream" onchange="filterByStream()">
@@ -86,7 +76,7 @@
   </section>
 
   <!-- 🗣️ Post Feed -->
-  <section id="posts">
+  <section id="posts" class="animate__animated animate__fadeInUp animate__delay-5s">
     <h2>Student Posts</h2>
     <div id="postFeed"></div>
   </section>
