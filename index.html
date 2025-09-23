@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <!-- Custom Styles -->
   <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
 
   <!-- SVG Filter for Glass Distortion -->
   <svg style="display: none">
@@ -19,8 +21,24 @@
       <feDisplacementMap in="SourceGraphic" in2="noise" scale="77" />
     </filter>
   </svg>
-</head>
-<body>
+
+  <!-- ✍️ Typing Animation -->
+  <div class="typing-container login-typing animate__animated animate__fadeInDown">
+    <h3 class="typing-text">Welcome to PathPradarshak — Empowering Your Career Journey</h3>
+  </div>
+
+  <!-- 🚀 Animated Loading Screen -->
+  <div id="loadingScreen" class="loading-wrapper" style="display: none;">
+    <h1 class="ml5">
+      <span class="text-wrapper">
+        <span class="line line1"></span>
+        <span class="letters letters-left">Please wait</span>
+        <span class="letters ampersand">&amp;</span>
+        <span class="letters letters-right">Enjoy</span>
+        <span class="line line2"></span>
+      </span>
+    </h1>
+  </div>
 
   <!-- 🔐 Login/Register Glass Form -->
   <div class="glass-form" id="authForm">
@@ -28,68 +46,77 @@
     <div class="glass-overlay"></div>
     <div class="glass-specular"></div>
     <div class="glass-content">
+
+      <!-- ✅ Login Box -->
       <div class="form-container login active">
         <h3>Login</h3>
-        <form>
+        <form id="loginForm">
           <div class="form-group">
-            <i class="fas fa-envelope"></i>
-            <input type="email" placeholder="Email" required>
+            <i class="fas fa-envelope" title="Email"></i>
+            <span class="icon-label">Write Email Here</span>
+            <input type="email" placeholder="Enter your email" required autocomplete="off">
           </div>
           <div class="form-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" placeholder="Password" required>
+            <i class="fas fa-lock" title="Password"></i>
+            <span class="icon-label">Write Password Here</span>
+            <input type="password" placeholder="Enter your password" required autocomplete="off">
           </div>
           <button type="submit">Sign In</button>
         </form>
         <p class="form-switch">Don't have an account? <a href="#" class="switch-to-register">Register</a></p>
       </div>
 
+      <!-- ✅ Register Box -->
       <div class="form-container register">
         <h3>Register</h3>
-        <form>
+        <form id="registerForm">
           <div class="form-group">
-            <i class="fas fa-user"></i>
+            <i class="fas fa-user" title="Username"></i>
+            <span class="icon-label">Write Username Here</span>
             <input type="text" placeholder="Username" required>
           </div>
           <div class="form-group">
-            <i class="fas fa-envelope"></i>
+            <i class="fas fa-envelope" title="Email"></i>
+            <span class="icon-label">Write Email Here</span>
             <input type="email" placeholder="Email" required>
           </div>
           <div class="form-group">
-            <i class="fas fa-lock"></i>
+            <i class="fas fa-lock" title="Password"></i>
+            <span class="icon-label">Write Password Here</span>
             <input type="password" placeholder="Password" required>
           </div>
           <div class="form-group">
-            <i class="fas fa-lock"></i>
+            <i class="fas fa-lock" title="Confirm Password"></i>
+            <span class="icon-label">Confirm Password Here</span>
             <input type="password" placeholder="Confirm Password" required>
           </div>
           <button type="submit">Sign Up</button>
         </form>
         <p class="form-switch">Already have an account? <a href="#" class="switch-to-login">Login</a></p>
       </div>
-    </div>
-  </div>
 
-  <!-- 🔓 Main App (hidden until login) -->
+    </div> <!-- closes .glass-content -->
+  </div>   <!-- closes .glass-form -->
+
+  <!-- 🔓 Main App -->
   <div id="mainApp" style="display:none">
-    <!-- 🌙 Header -->
     <header class="header-bar animate__animated animate__fadeInDown">
-  <h1 class="center-title">PathPradarshak</h1>
-  <div class="header-actions">
-    <button id="darkToggle">🌙</button>
-    <button id="logoutBtn">Logout</button>
-  </div>
-</header>
-    <!-- ✍️ Typing animation -->
-    <div class="typing-container animate__animated animate__fadeInUp animate__delay-1s">
-      <h3 class="typing-text">Enjoy your time here!!</h3>
+      <h1 class="center-title">PathPradarshak</h1>
+      <div class="header-actions">
+  <button id="darkToggle" aria-label="Toggle dark mode">🌙</button>
+  <button id="logoutBtn">Logout</button>
+  <button id="deleteAccountBtn">Delete Account</button>
+</div>
+    </header>
+
+    <div class="welcome-banner animate__animated animate__fadeInDown">
+      <h3 id="welcomeMessage">Welcome back, explorer!</h3>
     </div>
 
-    <!-- 🧠 Career Quiz -->
-    <section id="quiz" class="animate__animated animate__fadeInUp animate__delay-2s">
+    <!-- Career Quiz -->
+    <section id="quiz">
       <h2>Career Quiz</h2>
       <form id="quizForm">
-        <!-- 10 questions -->
         <label>Do you enjoy solving math problems?</label>
         <select name="q1"><option value="Science">Yes</option><option value="Arts">No</option></select>
         <label>Are you interested in business and finance?</label>
@@ -115,8 +142,8 @@
       <p id="streamResult"></p>
     </section>
 
-    <!-- 📝 Post Creation -->
-    <section id="createPost" class="animate__animated animate__fadeInUp animate__delay-3s">
+    <!-- Post Creation -->
+    <section id="createPost">
       <h2>Create a Post</h2>
       <input type="text" id="postTitle" placeholder="Post Title"/>
       <textarea id="postContent" placeholder="Post Content"></textarea>
@@ -128,8 +155,8 @@
       <button onclick="createPost()">Post</button>
     </section>
 
-    <!-- 🔍 Search & Filter -->
-    <section id="search" class="animate__animated animate__fadeInUp animate__delay-4s">
+    <!-- Search & Filter -->
+    <section id="search">
       <input type="text" id="searchInput" placeholder="Search posts..."/>
       <button onclick="searchPosts()">Search</button>
       <select id="filterStream" onchange="filterByStream()">
@@ -140,17 +167,19 @@
       </select>
     </section>
 
-    <!-- 🗣️ Post Feed -->
-    <section id="posts" class="animate__animated animate__fadeInUp animate__delay-5s">
+    <!-- Post Feed -->
+    <section id="posts">
       <h2>Student Posts</h2>
       <div id="postFeed"></div>
     </section>
 
-    <!-- ➕ Floating Action Button -->
-    <button id="fab" onclick="scrollToPost()">＋</button>
+    <!-- Floating Action Button -->
+    <button id="fab" onclick="scrollToPost()" aria-label="Create new post">＋</button>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Scripts (Anime.js for loading animation + Confetti for quiz celebration + Your app logic) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
