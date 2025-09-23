@@ -8,6 +8,10 @@
   --text: #eee;
 }
 
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 /* 🔧 Base Layout */
 body {
   font-family: 'Segoe UI', sans-serif;
@@ -32,7 +36,6 @@ body {
   margin: 0 auto;
   text-align: center;
 }
-/* 🧭 Header Action Buttons */
 .header-actions {
   position: absolute;
   right: 1rem;
@@ -41,7 +44,6 @@ body {
   display: flex;
   gap: 0.5rem;
 }
-
 #darkToggle,
 #logoutBtn {
   font-size: 1rem;
@@ -52,37 +54,30 @@ body {
   font-weight: bold;
   transition: background-color 0.3s ease;
 }
-
-/* 🌙 Dark Mode Button */
 #darkToggle {
   background-color: #444;
   color: #fff;
 }
-
-/* 🔓 Logout Button */
 #logoutBtn {
   background-color: #e74c3c;
   color: #fff;
 }
 #logoutBtn:hover {
   background-color: #c0392b;
-}}
+}
 
-/* ✍️ Typing Animation Banner */
-.typing-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 60px;
+/* ✍️ Typing Animation */
+.login-typing {
+  text-align: center;
   margin-bottom: 1rem;
 }
 .typing-text {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
   overflow: hidden;
   white-space: nowrap;
   border-right: 3px solid #3498db;
-  animation: typing 3s steps(20) infinite, blink 0.5s step-end infinite alternate, pulse 2s infinite;
+  animation: typing 4s steps(40) infinite, blink 0.5s step-end infinite alternate;
 }
 @keyframes typing {
   0% { width: 0; }
@@ -92,10 +87,16 @@ body {
 @keyframes blink {
   50% { border-color: transparent; }
 }
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-  100% { transform: scale(1); }
+
+/* 👋 Welcome Banner */
+.welcome-banner {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+#welcomeMessage {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
 }
 
 /* 🧠 Form Elements */
@@ -133,7 +134,7 @@ section {
   margin-bottom: 2rem;
 }
 
-/* 🧊 Glassmorphic Post Cards */
+/* 🧊 Post Cards */
 #postFeed > div {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -178,15 +179,8 @@ section {
   transform: scale(1.1);
 }
 
-/* 🔐 Glassmorphic Login/Register Form */
+/* 🔐 Glassmorphic Form */
 .glass-form {
-  --bg-color: rgba(255, 255, 255, 0.25);
-  --highlight: rgba(255, 255, 255, 0.75);
-  --text: #ffffff;
-  --input-bg: rgba(255, 255, 255, 0.1);
-  --input-border: rgba(255, 255, 255, 0.2);
-  --input-focus: rgba(255, 255, 255, 0.3);
-
   position: relative;
   width: 400px;
   min-height: 450px;
@@ -209,11 +203,11 @@ section {
 }
 .glass-overlay {
   z-index: 2;
-  background: var(--bg-color);
+  background: rgba(255, 255, 255, 0.25);
 }
 .glass-specular {
   z-index: 3;
-  box-shadow: inset 1px 1px 1px var(--highlight);
+  box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.75);
 }
 .glass-content {
   position: relative;
@@ -222,6 +216,8 @@ section {
   color: var(--text);
   height: 100%;
 }
+
+/* 🧩 Login/Register Forms */
 .form-container {
   display: none;
   opacity: 0;
@@ -250,21 +246,17 @@ section {
   transform: translateY(-50%);
   color: var(--text);
   opacity: 0.8;
+  pointer-events: none;
 }
 .form-group input {
   width: 100%;
   padding: 12px 15px 12px 45px;
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   color: var(--text);
   font-size: 16px;
   transition: border-color 0.3s ease, background 0.3s ease;
-}
-.form-group input:focus {
-  outline: none;
-  background: var(--input-focus);
-  border-color: var(--highlight);
 }
 .form-group input::placeholder {
   color: rgba(255, 255, 255, 0.6);
@@ -300,31 +292,121 @@ button[type="submit"]:hover {
 .form-switch a:hover {
   text-decoration: underline;
 }
-/* 🌙 Dark Mode for Login */
-@media (prefers-color-scheme: dark) {
-  .glass-form {
-    --bg-color: rgba(0, 0, 0, 0.25);
-    --highlight: rgba(255, 255, 255, 0.15);
-    --input-bg: rgba(0, 0, 0, 0.2);
-    --input-border: rgba(255, 255, 255, 0.1);
-    --input-focus: rgba(0, 0, 0, 0.3);
-  }
-}/* 🔓 Logout Button Styling */
-.logout-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 1rem;
+
+/* 🚀 Loading Screen */
+.ml5 {
+  position: relative;
+  font-weight: 300;
+  font-size: 4.5em;
+  color: #402d2d;
+  text-align: center;
+  margin-top: 20vh;
 }
-#logoutBtn {
-  padding: 0.5rem 1rem;
-  background-color: #e74c3c;
-  color: white;
+.ml5 .text-wrapper {
+  position: relative;
+  display: inline-block;
+  padding-top: 0.1em;
+  padding-right: 0.05em;
+  padding-bottom: 0.15em;
+  line-height: 1em;
+}
+.ml5 .line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  height: 3px;
+  width: 100%;
+  background-color: #402d2d;
+  transform-origin: 0.5 0;
+}
+.ml5 .ampersand {
+  font-family: Baskerville, serif;
+  font-style: italic;
+  font-weight: 400;
+  width: 1em;
+  margin-right: -0.1em;
+  margin-left: -0.1em;
+}
+.ml5 .letters {
+  display: inline-block;
+  opacity: 0;
+}
+
+/* 🚀 Loading Screen Wrapper */
+.loading-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(8px);
+}
+/* ——— Icon + label alignment inside the glass form ——— */
+.glass-form .form-group {
+  position: relative;
+}
+
+/* Center the icons vertically relative to the input */
+.glass-form .form-group i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--text);
+  opacity: 0.85;
+  line-height: 1; /* prevents vertical drift */
+  pointer-events: none;
+}
+
+/* Ensure consistent input height and enough left padding for the icon */
+.glass-form .form-group input {
+  height: 44px;                 /* consistent control height */
+  padding: 12px 15px 12px 48px; /* room for icon at left */
+}
+
+/* Small helper label beside the icon (above the input, not overlapping) */
+.glass-form .form-group .icon-label {
+  position: absolute;
+  left: 48px;
+  top: -10px;               /* sits just above the input field */
+  font-size: 12px;
+  color: var(--text);
+  opacity: 0.7;
+  pointer-events: none;     /* avoids interfering with clicks */
+}
+
+/* Optional: tighter spacing when labels are present */
+.glass-form .form-group {
+  margin-bottom: 26px; /* extra space to accommodate the icon-label */
+}
+
+/* Keep placeholder readable on translucent inputs */
+.glass-form .form-group input::placeholder {
+  color: rgba(0, 0, 0, 0.45);
+}
+:root[data-theme='dark'] .glass-form .form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+#deleteAccountBtn {
+  font-size: 1rem;
+  padding: 0.4rem 0.8rem;
   border: none;
   border-radius: 6px;
-  font-weight: bold;
   cursor: pointer;
+  font-weight: bold;
+  background-color: #b22222; /* dark red */
+  color: #fff;
   transition: background-color 0.3s ease;
 }
-#logoutBtn:hover {
-  background-color: #c0392b;
+
+#deleteAccountBtn:hover {
+  background-color: #8b0000; /* deeper red on hover */
 }
