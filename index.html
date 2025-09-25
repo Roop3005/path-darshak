@@ -13,7 +13,20 @@
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-
+<!-- Intro Animation -->
+<div id="introAnimation">
+  <h1 class="ml8">
+    <span class="letters-container">
+      <span class="letters letters-left">Hi</span>
+      <span class="letters bang">!</span>
+    </span>
+    <span class="circle-wrapper">
+      <span class="circle circle-white"></span>
+      <span class="circle circle-dark"></span>
+      <span class="circle circle-dark-dashed"></span>
+    </span>
+  </h1>
+</div>
   <!-- SVG Filter for Glass Distortion -->
   <svg style="display: none">
     <filter id="glass-distortion">
@@ -65,7 +78,7 @@
         </form>
         <p class="form-switch">Don't have an account? <a href="#" class="switch-to-register">Register</a></p>
       </div>
-
+	
       <!-- ✅ Register Box -->
       <div class="form-container register">
         <h3>Register</h3>
@@ -113,8 +126,33 @@
       <h3 id="welcomeMessage">Welcome back, explorer!</h3>
     </div>
 
+    <!-- Navigation Menu -->
+    <div class="nav-menu">
+      <button id="viewProfileBtn" class="nav-btn">View Profile</button>
+      <button id="viewQuizBtn" class="nav-btn">Quiz</button>
+    </div>
+
+    <!-- View Profile Section -->
+    <section id="profile" style="display:none">
+      <h2>Your Profile</h2>
+      <div class="profile-info">
+        <div class="profile-item">
+          <span class="profile-label">Username:</span>
+          <span id="profileUsername"></span>
+        </div>
+        <div class="profile-item">
+          <span class="profile-label">Email:</span>
+          <span id="profileEmail"></span>
+        </div>
+        <div class="profile-item">
+          <span class="profile-label">Password:</span>
+          <span id="profilePassword"></span>
+        </div>
+      </div>
+    </section>
+
     <!-- Career Quiz -->
-    <section id="quiz">
+    <section id="quiz" style="display:none">
       <h2>Career Quiz</h2>
       <form id="quizForm">
         <label>Do you enjoy solving math problems?</label>
@@ -177,9 +215,44 @@
     <button id="fab" onclick="scrollToPost()" aria-label="Create new post">＋</button>
   </div>
 
+
   <!-- Scripts (Anime.js for loading animation + Confetti for quiz celebration + Your app logic) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Intro animation timeline
+  anime.timeline({ loop: false })
+    .add({
+      targets: '.ml8 .letters-left',
+      scale: [0,1],
+      duration: 700,
+      elasticity: 600
+    }).add({
+      targets: '.ml8 .bang',
+      scale: [0,1],
+      duration: 600,
+      elasticity: 600,
+      offset: '-=300'
+    }).add({
+      targets: '.circle-dark-dashed',
+      rotateZ: 360,
+      duration: 800,
+      easing: "easeInOutSine",
+      offset: '-=500'
+    }).add({
+      targets: '#introAnimation',
+      opacity: [1,0],
+      duration: 500,
+      easing: "easeOutExpo",
+      complete: () => {
+        document.getElementById('introAnimation').classList.add('hidden');
+        // ✅ Now your "Please wait and enjoy" animation can run normally
+      }
+    });
+});
+</script>
 </body>
 </html>
