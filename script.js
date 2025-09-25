@@ -286,9 +286,31 @@ window.addEventListener("load", () => {
     document.getElementById("mainApp").style.display = "block";
     if (user.username) {
       document.getElementById("welcomeMessage").innerText = `Welcome back, ${user.username}!`;
+      
+      // Set profile information
+      document.getElementById("profileUsername").innerText = user.username;
+      document.getElementById("profileEmail").innerText = user.email;
+      document.getElementById("profilePassword").innerText = user.password;
     }
     renderPosts();
   }
+});
+
+// Navigation buttons functionality
+document.getElementById("viewProfileBtn").addEventListener("click", () => {
+  document.getElementById("profile").style.display = "block";
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("createPost").style.display = "none";
+  document.getElementById("search").style.display = "none";
+  document.getElementById("posts").style.display = "none";
+});
+
+document.getElementById("viewQuizBtn").addEventListener("click", () => {
+  document.getElementById("profile").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  document.getElementById("createPost").style.display = "none";
+  document.getElementById("search").style.display = "none";
+  document.getElementById("posts").style.display = "none";
 });
 document.getElementById("deleteAccountBtn").addEventListener("click", () => {
   const confirmDelete = confirm("Are you sure you want to permanently delete your account? This cannot be undone.");
