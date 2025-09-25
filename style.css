@@ -99,6 +99,60 @@ body {
   color: var(--text);
 }
 
+/* 🧭 Navigation Menu */
+.nav-menu {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.nav-btn {
+  padding: 0.8rem 1.5rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 👤 Profile Section */
+#profile {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.profile-item {
+  display: flex;
+  padding: 0.8rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.profile-label {
+  font-weight: bold;
+  min-width: 100px;
+}
+
 /* 🧠 Form Elements */
 input, select, textarea {
   margin: 0.5rem 0;
@@ -409,4 +463,78 @@ button[type="submit"]:hover {
 
 #deleteAccountBtn:hover {
   background-color: #8b0000; /* deeper red on hover */
+}
+/* Intro animation container */
+#introAnimation {
+  position: fixed;
+  inset: 0;
+  background: #fff; /* or match your theme */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#introAnimation.hidden {
+  display: none;
+}
+
+/* Text styling */
+.ml8 {
+  font-weight: 900;
+  font-size: 3.5em;
+  color: #333;
+  position: relative;
+}
+
+.ml8 .letters-container {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.ml8 .letters {
+  display: inline-block;
+  line-height: 1em;
+}
+
+/* Unified circle wrapper */
+.circle-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.circle-wrapper .circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 4px solid currentColor;
+}
+
+.circle-white {
+  border-color: #fff;
+  width: 3em;
+  height: 3em;
+}
+
+.circle-dark {
+  border-color: #333;
+  width: 2.5em;
+  height: 2.5em;
+}
+
+.circle-dark-dashed {
+  border-color: #333;
+  border-style: dashed;
+  width: 3.5em;
+  height: 3.5em;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
