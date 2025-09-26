@@ -1,20 +1,52 @@
-/* 🌙 Theme Variables */
+/* 
+  This file contains the CSS styles for the PathPradarshak application.
+  It defines the visual appearance of the elements, including layout, colors, and animations.
+*/
+
+/* Theme variables for light and dark modes */
 :root[data-theme='light'] {
-  --bg: #f5f5f5;
-  --text: #222;
+  --bg: #f5f5f5; /* Background color for light mode */
+  --text: #222; /* Text color for light mode */
 }
 :root[data-theme='dark'] {
-  --bg: #121212;
-  --text: #eee;
+  --bg: #121212; /* Background color for dark mode */
+  --text: #eee; /* Text color for dark mode */
 }
 
+/* Smooth transition for theme changes */
 html {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* 🔧 Base Layout */
+/* Animated gradient background */
+.animated-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+/* Keyframes for the gradient animation */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Basic layout styles for the body */
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 1rem;
   background-color: var(--bg);
@@ -22,7 +54,12 @@ body {
   transition: all 0.3s ease;
 }
 
-/* 🧭 Header */
+/* Hide default radio buttons */
+input[type="radio"] {
+  display: none;
+}
+
+/* Header styles */
 .header-bar {
   display: flex;
   justify-content: center;
@@ -44,7 +81,7 @@ body {
   display: flex;
   gap: 0.5rem;
 }
-#darkToggle,
+.darkToggle,
 #logoutBtn {
   font-size: 1rem;
   padding: 0.4rem 0.8rem;
@@ -54,7 +91,7 @@ body {
   font-weight: bold;
   transition: background-color 0.3s ease;
 }
-#darkToggle {
+.darkToggle {
   background-color: #444;
   color: #fff;
 }
@@ -66,7 +103,7 @@ body {
   background-color: #c0392b;
 }
 
-/* ✍️ Typing Animation */
+/* Typing animation for the login screen */
 .login-typing {
   text-align: center;
   margin-bottom: 1rem;
@@ -88,7 +125,7 @@ body {
   50% { border-color: transparent; }
 }
 
-/* 👋 Welcome Banner */
+/* Welcome banner styles */
 .welcome-banner {
   text-align: center;
   margin-bottom: 1rem;
@@ -99,7 +136,7 @@ body {
   color: var(--text);
 }
 
-/* 🧭 Navigation Menu */
+/* Navigation menu styles */
 .nav-menu {
   display: flex;
   justify-content: center;
@@ -109,23 +146,26 @@ body {
 
 .nav-btn {
   padding: 0.8rem 1.5rem;
-  background-color: #3498db;
+  background: linear-gradient(45deg, #3498db, #2980b9); /* Gradient background */
   color: white;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  letter-spacing: 0.5px; /* Slightly increased letter spacing */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Initial subtle shadow */
 }
 
 .nav-btn:hover {
-  background-color: #2980b9;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(45deg, #2980b9, #3498db); /* Shifted gradient on hover */
+  transform: translateY(-4px) scale(1.02); /* More pronounced lift and slight scale */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+  border-color: rgba(255, 255, 255, 0.6); /* Border brightens on hover */
 }
 
-/* 👤 Profile Section */
+/* Profile section styles */
 #profile {
   max-width: 600px;
   margin: 0 auto 2rem;
@@ -143,9 +183,14 @@ body {
 
 .profile-item {
   display: flex;
+  align-items: center;
   padding: 0.8rem;
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
+}
+
+.profile-icon {
+  margin-right: 15px;
 }
 
 .profile-label {
@@ -153,7 +198,17 @@ body {
   min-width: 100px;
 }
 
-/* 🧠 Form Elements */
+.profile-edit-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* Form element styles */
 input, select, textarea {
   margin: 0.5rem 0;
   padding: 0.5rem;
@@ -183,12 +238,48 @@ button:hover {
   color: #fff;
 }
 
-/* 📦 Sections */
+/* Custom styles for the quiz */
+.quiz-question {
+  margin-bottom: 35px; /* Space between questions */
+}
+
+.quiz-question .option-label {
+  border: none;
+  padding: 0;
+}
+
+/* Custom radio button styles */
+.option-text {
+  position: relative;
+  padding-right: 15px;
+}
+
+.option-text:after {
+  content: '•';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  font-size: 24px;
+  line-height: 20px;
+  text-align: center;
+  color: var(--text);
+  transition: all 0.3s ease;
+}
+
+.option-label input[type="radio"]:checked + .option-text:after {
+  color: #2196f3;
+  font-weight: bold;
+}
+
+/* Section styles */
 section {
   margin-bottom: 2rem;
 }
 
-/* 🧊 Post Cards */
+/* Post card styles */
 #postFeed > div {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -208,7 +299,7 @@ section {
   color: var(--text);
 }
 
-/* ➕ Floating Action Button */
+/* Floating action button styles */
 #fab {
   position: fixed;
   bottom: 20px;
@@ -233,121 +324,189 @@ section {
   transform: scale(1.1);
 }
 
-/* 🔐 Glassmorphic Form */
-.glass-form {
-  position: relative;
-  width: 400px;
-  min-height: 450px;
+/* New login/register form styles */
+#authForm.container {
+	background-color: #fff;
+	border-radius: 10px;
+  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
+			0 10px 10px rgba(0,0,0,0.22);
+	position: relative;
+	overflow: hidden;
+	width: 768px;
+	max-width: 100%;
+	min-height: 480px;
   margin: 5vh auto;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
-}
-.glass-filter,
-.glass-overlay,
-.glass-specular {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-}
-.glass-filter {
-  z-index: 1;
-  backdrop-filter: blur(4px);
-  filter: url(#glass-distortion) saturate(120%) brightness(1.15);
-}
-.glass-overlay {
-  z-index: 2;
-  background: rgba(255, 255, 255, 0.25);
-}
-.glass-specular {
-  z-index: 3;
-  box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.75);
-}
-.glass-content {
-  position: relative;
-  z-index: 4;
-  padding: 30px;
-  color: var(--text);
-  height: 100%;
 }
 
-/* 🧩 Login/Register Forms */
-.form-container {
-  display: none;
-  opacity: 0;
-  transform: translateX(20px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-.form-container.active {
-  display: block;
-  opacity: 1;
-  transform: translateX(0);
-}
-.form-container h3 {
-  margin-bottom: 20px;
-  font-size: 28px;
-  font-weight: 600;
-  text-align: center;
-}
-.form-group {
-  position: relative;
-  margin-bottom: 20px;
-}
-.form-group i {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text);
-  opacity: 0.8;
-  pointer-events: none;
-}
-.form-group input {
-  width: 100%;
-  padding: 12px 15px 12px 45px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  color: var(--text);
-  font-size: 16px;
-  transition: border-color 0.3s ease, background 0.3s ease;
-}
-.form-group input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-button[type="submit"] {
-  width: 100%;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-  color: var(--text);
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 10px;
-}
-button[type="submit"]:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.4);
-}
-.form-switch {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 14px;
-  opacity: 0.8;
-}
-.form-switch a {
-  color: var(--text);
-  text-decoration: none;
-  font-weight: 600;
-}
-.form-switch a:hover {
-  text-decoration: underline;
+#authForm .form-container {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	transition: all 0.6s ease-in-out;
 }
 
-/* 🚀 Loading Screen */
+#authForm .sign-in-container {
+	left: 0;
+	width: 50%;
+	z-index: 2;
+}
+
+#authForm .forgot-password-container {
+	left: 0;
+	width: 50%;
+	z-index: 2;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background-color: #FFFFFF;
+}
+
+#authForm.container.right-panel-active .sign-in-container {
+	transform: translateX(100%);
+}
+
+#authForm .sign-up-container {
+	left: 0;
+	width: 50%;
+	opacity: 0;
+	z-index: 1;
+}
+
+#authForm.container.right-panel-active .sign-up-container {
+	transform: translateX(100%);
+	opacity: 1;
+	z-index: 5;
+	animation: show 0.6s;
+}
+
+@keyframes show {
+	0%, 49.99% {
+		opacity: 0;
+		z-index: 1;
+	}
+	
+	50%, 100% {
+		opacity: 1;
+		z-index: 5;
+	}
+}
+
+#authForm .overlay-container {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 50%;
+	height: 100%;
+	overflow: hidden;
+	transition: transform 0.6s ease-in-out;
+	z-index: 100;
+}
+
+#authForm.container.right-panel-active .overlay-container{
+	transform: translateX(-100%);
+}
+
+#authForm .overlay {
+	background: #FF416C;
+	background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
+	background: linear-gradient(to right, #FF4B2B, #FF416C);
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 0 0;
+	color: #FFFFFF;
+	position: relative;
+	left: -100%;
+	height: 100%;
+	width: 200%;
+  	transform: translateX(0);
+	transition: transform 0.6s ease-in-out;
+}
+
+#authForm.container.right-panel-active .overlay {
+  	transform: translateX(50%);
+}
+
+#authForm .overlay-panel {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	padding: 0 20px;
+	text-align: center;
+	top: 0;
+	height: 100%;
+	width: 50%;
+	transform: translateX(0);
+	transition: transform 0.6s ease-in-out;
+}
+
+#authForm .overlay-panel p {
+  width: 250px;
+}
+
+#authForm .overlay-left {
+	transform: translateX(-20%);
+}
+
+#authForm.container.right-panel-active .overlay-left {
+	transform: translateX(0);
+}
+
+#authForm .overlay-right {
+	right: 0;
+	transform: translateX(0);
+}
+
+#authForm.container.right-panel-active .overlay-right {
+	transform: translateX(20%);
+}
+
+#authForm .social-container {
+	margin: 20px 0;
+}
+
+#authForm .social-container a {
+	border: 1px solid #DDDDDD;
+	border-radius: 50%;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0 5px;
+	height: 40px;
+	width: 40px;
+}
+
+#authForm form {
+	background-color: #FFFFFF;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	padding: 0 50px;
+	height: 100%;
+	text-align: center;
+}
+
+[data-theme='dark'] #authForm input {
+  color: #222;
+}
+
+#authForm input {
+	background-color: #eee;
+	border: none;
+	padding: 12px 15px;
+	margin: 8px 0;
+	width: 100%;
+}
+
+#authForm button.ghost {
+	background-color: transparent;
+	border-color: #FFFFFF;
+    color: #FFFFFF;
+}
+
+/* Loading screen animation styles */
 .ml5 {
   position: relative;
   font-weight: 300;
@@ -388,7 +547,7 @@ button[type="submit"]:hover {
   opacity: 0;
 }
 
-/* 🚀 Loading Screen Wrapper */
+/* Loading screen wrapper styles */
 .loading-wrapper {
   position: fixed;
   top: 0;
@@ -402,12 +561,12 @@ button[type="submit"]:hover {
   align-items: center;
   backdrop-filter: blur(8px);
 }
-/* ——— Icon + label alignment inside the glass form ——— */
+/* Icon and label alignment in the glass form */
 .glass-form .form-group {
   position: relative;
 }
 
-/* Center the icons vertically relative to the input */
+/* Center icons vertically */
 .glass-form .form-group i {
   position: absolute;
   left: 15px;
@@ -416,33 +575,33 @@ button[type="submit"]:hover {
   font-size: 18px;
   color: var(--text);
   opacity: 0.85;
-  line-height: 1; /* prevents vertical drift */
+  line-height: 1; /* Prevents vertical drift */
   pointer-events: none;
 }
 
-/* Ensure consistent input height and enough left padding for the icon */
+/* Consistent input height and padding for icons */
 .glass-form .form-group input {
-  height: 44px;                 /* consistent control height */
-  padding: 12px 15px 12px 48px; /* room for icon at left */
+  height: 44px;
+  padding: 12px 15px 12px 48px; /* Room for icon */
 }
 
-/* Small helper label beside the icon (above the input, not overlapping) */
+/* Label styles for icons */
 .glass-form .form-group .icon-label {
   position: absolute;
   left: 48px;
-  top: -10px;               /* sits just above the input field */
+  top: -10px;
   font-size: 12px;
   color: var(--text);
   opacity: 0.7;
-  pointer-events: none;     /* avoids interfering with clicks */
+  pointer-events: none;
 }
 
-/* Optional: tighter spacing when labels are present */
+/* Spacing for form groups with icon labels */
 .glass-form .form-group {
-  margin-bottom: 26px; /* extra space to accommodate the icon-label */
+  margin-bottom: 26px;
 }
 
-/* Keep placeholder readable on translucent inputs */
+/* Placeholder text styles */
 .glass-form .form-group input::placeholder {
   color: rgba(0, 0, 0, 0.45);
 }
@@ -456,19 +615,19 @@ button[type="submit"]:hover {
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
-  background-color: #b22222; /* dark red */
+  background-color: #b22222; /* Dark red */
   color: #fff;
   transition: background-color 0.3s ease;
 }
 
 #deleteAccountBtn:hover {
-  background-color: #8b0000; /* deeper red on hover */
+  background-color: #8b0000; /* Deeper red on hover */
 }
 /* Intro animation container */
 #introAnimation {
   position: fixed;
   inset: 0;
-  background: #fff; /* or match your theme */
+  background: #fff; /* Match theme */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -479,7 +638,7 @@ button[type="submit"]:hover {
   display: none;
 }
 
-/* Text styling */
+/* Text styles for intro animation */
 .ml8 {
   font-weight: 900;
   font-size: 3.5em;
@@ -498,7 +657,7 @@ button[type="submit"]:hover {
   line-height: 1em;
 }
 
-/* Unified circle wrapper */
+/* Circle wrapper for intro animation */
 .circle-wrapper {
   position: absolute;
   top: 50%;
@@ -537,4 +696,47 @@ button[type="submit"]:hover {
 
 @keyframes spin {
   to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Dark mode overrides */
+[data-theme='dark'] .animated-bg {
+  display: none;
+}
+
+[data-theme='dark'] button[type="submit"] {
+  background: #333;
+  color: #eee;
+}
+
+[data-theme='dark'] button[type="submit"]:hover {
+  background: #444;
+  color: #fff;
+}
+
+[data-theme='dark'] .form-group input {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .form-group input:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.login-header-actions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1001;
+}
+
+.login-header-actions .darkToggle {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    background-color: #444;
+    color: #fff;
 }
