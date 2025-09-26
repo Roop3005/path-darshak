@@ -1,18 +1,31 @@
+<!-- 
+  This is the main HTML file for the PathPradarshak application.
+  It defines the structure of the web page, including the header, forms, and main content.
+-->
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
+  <!-- Meta tags for character set and viewport -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Title of the web page -->
   <title>PathPradarshak</title>
 
-  <!-- Font Awesome Icons -->
+  <!-- External stylesheets -->
+  <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Animate.css -->
+  <!-- Animate.css for animations -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-  <!-- Custom Styles -->
+  <!-- Google Fonts for custom fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Custom stylesheet for the application -->
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
+<!-- Animated background for the page -->
+<div class="animated-bg"></div>
 <!-- Intro Animation -->
 <div id="introAnimation">
   <h1 class="ml8">
@@ -27,7 +40,7 @@
     </span>
   </h1>
 </div>
-  <!-- SVG Filter for Glass Distortion -->
+  <!-- SVG Filter for Glass Distortion effect -->
   <svg style="display: none">
     <filter id="glass-distortion">
       <feTurbulence type="turbulence" baseFrequency="0.008" numOctaves="2" result="noise" />
@@ -35,12 +48,16 @@
     </filter>
   </svg>
 
-  <!-- ✍️ Typing Animation -->
+  <div class="login-header-actions">
+    <button class="darkToggle" aria-label="Toggle dark mode">🌙</button>
+  </div>
+
+  <!-- Typing Animation for the welcome message -->
   <div class="typing-container login-typing animate__animated animate__fadeInDown">
     <h3 class="typing-text">Welcome to PathPradarshak — Empowering Your Career Journey</h3>
   </div>
 
-  <!-- 🚀 Animated Loading Screen -->
+  <!-- Animated Loading Screen -->
   <div id="loadingScreen" class="loading-wrapper" style="display: none;">
     <h1 class="ml5">
       <span class="text-wrapper">
@@ -53,135 +70,279 @@
     </h1>
   </div>
 
-  <!-- 🔐 Login/Register Glass Form -->
-  <div class="glass-form" id="authForm">
-    <div class="glass-filter"></div>
-    <div class="glass-overlay"></div>
-    <div class="glass-specular"></div>
-    <div class="glass-content">
+  <!-- Login/Register Form Container -->
+  <div class="container" id="authForm">
+    <!-- Sign Up Form -->
+    <div class="form-container sign-up-container">
+      <form id="registerForm">
+        <h1>Create Account</h1>
 
-      <!-- ✅ Login Box -->
-      <div class="form-container login active">
-        <h3>Login</h3>
-        <form id="loginForm">
-          <div class="form-group">
-            <i class="fas fa-envelope" title="Email"></i>
-            <span class="icon-label">Write Email Here</span>
-            <input type="email" placeholder="Enter your email" required autocomplete="off">
-          </div>
-          <div class="form-group">
-            <i class="fas fa-lock" title="Password"></i>
-            <span class="icon-label">Write Password Here</span>
-            <input type="password" placeholder="Enter your password" required autocomplete="off">
-          </div>
-          <button type="submit">Sign In</button>
-        </form>
-        <p class="form-switch">Don't have an account? <a href="#" class="switch-to-register">Register</a></p>
+        <span>or use your email for registration</span>
+        <!-- Input fields for registration -->
+        <input type="text" placeholder="Username" required />
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Password" required />
+        <input type="password" placeholder="Confirm Password" required />
+        <button type="submit">Sign Up</button>
+      </form>
+    </div>
+    <!-- Sign In Form -->
+    <div class="form-container sign-in-container">
+      <form id="loginForm">
+        <h1>Sign in</h1>
+
+        <span>or use your account</span>
+        <!-- Input fields for login -->
+        <input type="email" placeholder="Enter your email" required autocomplete="off" />
+        <input type="password" placeholder="Enter your password" required autocomplete="off" />
+        <a href="#" id="forgotPasswordLink">Forgot your password?</a>
+        <button type="submit">Sign In</button>
+      </form>
+    </div>
+    <!-- Forgot Password Form -->
+    <div class="form-container forgot-password-container" style="display: none;">
+      <form id="forgotPasswordForm">
+        <h1>Forgot Your Password?</h1>
+        <span>Enter your email to reset your password</span>
+        <input type="email" placeholder="Email" required />
+        <button type="submit">Reset Password</button>
+        <a href="#" id="backToLogin">Back to Login</a>
+      </form>
+    </div>
+    <!-- Overlay for the form transitions -->
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h1>Already have an account?</h1>
+          <p>To keep connected with us please login with your personal info</p>
+          <button class="ghost" id="signIn">Sign In</button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h1>Hello, Friend!</h1>
+          <p>Enter your personal details and start journey with us</p>
+          <button class="ghost" id="signUp">Sign Up</button>
+        </div>
       </div>
-	
-      <!-- ✅ Register Box -->
-      <div class="form-container register">
-        <h3>Register</h3>
-        <form id="registerForm">
-          <div class="form-group">
-            <i class="fas fa-user" title="Username"></i>
-            <span class="icon-label">Write Username Here</span>
-            <input type="text" placeholder="Username" required>
-          </div>
-          <div class="form-group">
-            <i class="fas fa-envelope" title="Email"></i>
-            <span class="icon-label">Write Email Here</span>
-            <input type="email" placeholder="Email" required>
-          </div>
-          <div class="form-group">
-            <i class="fas fa-lock" title="Password"></i>
-            <span class="icon-label">Write Password Here</span>
-            <input type="password" placeholder="Password" required>
-          </div>
-          <div class="form-group">
-            <i class="fas fa-lock" title="Confirm Password"></i>
-            <span class="icon-label">Confirm Password Here</span>
-            <input type="password" placeholder="Confirm Password" required>
-          </div>
-          <button type="submit">Sign Up</button>
-        </form>
-        <p class="form-switch">Already have an account? <a href="#" class="switch-to-login">Login</a></p>
-      </div>
+    </div>
+  </div>
 
-    </div> <!-- closes .glass-content -->
-  </div>   <!-- closes .glass-form -->
-
-  <!-- 🔓 Main App -->
+  <!-- Main Application Container -->
   <div id="mainApp" style="display:none">
+    <!-- Header bar with title and action buttons -->
     <header class="header-bar animate__animated animate__fadeInDown">
       <h1 class="center-title">PathPradarshak</h1>
       <div class="header-actions">
-  <button id="darkToggle" aria-label="Toggle dark mode">🌙</button>
-  <button id="logoutBtn">Logout</button>
-  <button id="deleteAccountBtn">Delete Account</button>
-</div>
+        <!-- Dark mode toggle, logout, and delete account buttons -->
+        <button class="darkToggle" aria-label="Toggle dark mode">🌙</button>
+        <button id="logoutBtn">Logout</button>
+        <button id="deleteAccountBtn">Delete Account</button>
+      </div>
     </header>
 
-    <div class="welcome-banner animate__animated animate__fadeInDown">
-      <h3 id="welcomeMessage">Welcome back, explorer!</h3>
+        <!-- Welcome banner with a personalized message -->
+        <div class="welcome-banner animate__animated animate__fadeInDown">
+          <h3 id="welcomeMessage">Welcome back, explorer!</h3>
+        </div>
+    
+            
+        <!-- Navigation Menu -->
+        <div class="nav-menu">              <button id="homeBtn" class="nav-btn">Home</button>
+              <button id="viewProfileBtn" class="nav-btn">View Profile</button>      <button id="viewQuizBtn" class="nav-btn">Quiz</button>
+      <button id="viewPostsBtn" class="nav-btn">View Posts</button>
+      <button id="createPostBtn" class="nav-btn">Create Post</button>
+      <button id="searchPostsBtn" class="nav-btn">Search Posts</button>
     </div>
 
-    <!-- Navigation Menu -->
-    <div class="nav-menu">
-      <button id="viewProfileBtn" class="nav-btn">View Profile</button>
-      <button id="viewQuizBtn" class="nav-btn">Quiz</button>
-    </div>
-
-    <!-- View Profile Section -->
-    <section id="profile" style="display:none">
-      <h2>Your Profile</h2>
+    <!-- User Profile Section -->
+    <section id="profile" style="display:none" class="animate__animated animate__fadeIn">
+      <h2 class="section-title"><i class="fas fa-user-circle"></i> Your Profile</h2>
       <div class="profile-info">
-        <div class="profile-item">
-          <span class="profile-label">Username:</span>
-          <span id="profileUsername"></span>
+        <!-- Profile details: username, email, password -->
+        <div class="profile-item animate__animated animate__fadeInLeft">
+          <div class="profile-icon"><i class="fas fa-user"></i></div>
+          <div class="profile-content">
+            <span class="profile-label">Username</span>
+            <span id="profileUsername" class="profile-value"></span>
+          </div>
         </div>
-        <div class="profile-item">
-          <span class="profile-label">Email:</span>
-          <span id="profileEmail"></span>
+        <div class="profile-item animate__animated animate__fadeInLeft" style="animation-delay: 0.2s">
+          <div class="profile-icon"><i class="fas fa-envelope"></i></div>
+          <div class="profile-content">
+            <span class="profile-label">Email</span>
+            <span id="profileEmail" class="profile-value"></span>
+          </div>
         </div>
-        <div class="profile-item">
-          <span class="profile-label">Password:</span>
-          <span id="profilePassword"></span>
+        <div class="profile-item animate__animated animate__fadeInLeft" style="animation-delay: 0.4s">
+          <div class="profile-icon"><i class="fas fa-lock"></i></div>
+          <div class="profile-content">
+            <span class="profile-label">Password</span>
+            <span id="profilePassword" class="profile-value password-field">••••••••</span>
+            <button id="togglePassword" class="toggle-password"><i class="fas fa-eye"></i></button>
+          </div>
         </div>
+      </div>
+      <div class="profile-actions">
+        <button id="updateProfileBtn" class="action-btn update-profile-btn"><i class="fas fa-save"></i> Update Profile</button>
       </div>
     </section>
 
-    <!-- Career Quiz -->
-    <section id="quiz" style="display:none">
-      <h2>Career Quiz</h2>
-      <form id="quizForm">
-        <label>Do you enjoy solving math problems?</label>
-        <select name="q1"><option value="Science">Yes</option><option value="Arts">No</option></select>
-        <label>Are you interested in business and finance?</label>
-        <select name="q2"><option value="Commerce">Yes</option><option value="Arts">No</option></select>
-        <label>Do you like writing or public speaking?</label>
-        <select name="q3"><option value="Arts">Yes</option><option value="Science">No</option></select>
-        <label>Do you enjoy conducting experiments or working in labs?</label>
-        <select name="q4"><option value="Science">Yes</option><option value="Arts">No</option></select>
-        <label>Are you curious about how markets and economies work?</label>
-        <select name="q5"><option value="Commerce">Yes</option><option value="Arts">No</option></select>
-        <label>Do you enjoy drawing, painting, or designing?</label>
-        <select name="q6"><option value="Arts">Yes</option><option value="Science">No</option></select>
-        <label>Do you like solving logical puzzles or coding?</label>
-        <select name="q7"><option value="Science">Yes</option><option value="Arts">No</option></select>
-        <label>Are you interested in entrepreneurship or startups?</label>
-        <select name="q8"><option value="Commerce">Yes</option><option value="Arts">No</option></select>
-        <label>Do you enjoy reading literature or analyzing films?</label>
-        <select name="q9"><option value="Arts">Yes</option><option value="Science">No</option></select>
-        <label>Do you like working with data and statistics?</label>
-        <select name="q10"><option value="Commerce">Yes</option><option value="Arts">No</option></select>
-        <button type="submit">Submit</button>
-      </form>
-      <p id="streamResult"></p>
+    <!-- Career Quiz Section -->
+    <section id="quiz" style="display:none" class="animate__animated animate__fadeIn">
+      <h2 class="section-title"><i class="fas fa-graduation-cap"></i> Career Quiz</h2>
+      <div class="quiz-container">
+        <form id="quizForm">
+          <!-- Quiz questions -->
+          <div class="quiz-question animate__animated animate__fadeInUp">
+            <label><span class="question-number">1</span> Do you enjoy solving math problems?</label>
+            <div class="option-container">
+              <label class="option-label">
+                <input type="radio" name="q1" value="Science">
+                <span class="option-text">Yes</span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q1" value="Arts">
+                <span class="option-text">No</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="quiz-question animate__animated animate__fadeInUp" style="animation-delay: 0.1s; margin-top: 30px;">
+            <label><span class="question-number">2</span> Are you interested in business and finance?</label>
+            <div class="option-container">
+              <label class="option-label">
+                <input type="radio" name="q2" value="Commerce">
+                <span class="option-text">Yes</span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q2" value="Arts">
+                <span class="option-text">No</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="quiz-question animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+            <label><span class="question-number">3</span> Do you like writing or public speaking?</label>
+            <div class="option-container">
+              <label class="option-label">
+                <input type="radio" name="q3" value="Arts">
+                <span class="option-text">Yes</span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q3" value="Science">
+                <span class="option-text">No</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="quiz-question animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+            <label><span class="question-number">4</span> Do you enjoy conducting experiments or working in labs?</label>
+            <div class="option-container">
+              <label class="option-label">
+                <input type="radio" name="q4" value="Science">
+                <span class="option-text">Yes</span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q4" value="Arts">
+                <span class="option-text">No</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="quiz-question animate__animated animate__fadeInUp" style="animation-delay: 0.4s">
+            <label><span class="question-number">5</span> Are you curious about how markets and economies work?</label>
+            <div class="option-container">
+              <label class="option-label">
+                <input type="radio" name="q5" value="Commerce">
+                <span class="option-text">Yes</span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q5" value="Arts">
+                <span class="option-text">No</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="quiz-question animate__animated animate__fadeInUp" style="animation-delay: 0.5s">
+            <label><span class="question-number">6</span> Do you enjoy drawing, painting, or designing?</label>
+            <div class="option-container">
+              <label class="option-label">
+                <input type="radio" name="q6" value="Arts">
+                <span class="option-text">Yes</span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q6" value="Science">
+                <span class="option-text">No</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="quiz-question animate__animated animate__fadeInUp" style="animation-delay: 0.6s">
+            <label><span class="question-number">7</span> Do you like solving logical puzzles or coding?</label>
+            <div class="option-container">
+              <label class="option-label">
+                <input type="radio" name="q7" value="Science">
+                <span class="option-text">Yes</span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q7" value="Arts">
+                <span class="option-text">No</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="quiz-question animate__animated animate__fadeInUp" style="animation-delay: 0.7s">
+            <label><span class="question-number">8</span> Are you interested in entrepreneurship or startups?</label>
+            <div class="option-container">
+              <label class="option-label">
+                <input type="radio" name="q8" value="Commerce">
+                <span class="option-text">Yes</span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q8" value="Arts">
+                <span class="option-text">No</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="quiz-question animate__animated animate__fadeInUp" style="animation-delay: 0.8s">
+            <label><span class="question-number">9</span> Do you enjoy reading literature or analyzing films?</label>
+            <div class="option-container">
+              <label class="option-label">
+                <input type="radio" name="q9" value="Arts">
+                <span class="option-text">Yes</span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q9" value="Science">
+                <span class="option-text">No</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="quiz-question animate__animated animate__fadeInUp" style="animation-delay: 0.9s">
+            <label><span class="question-number">10</span> Do you like working with data and statistics?</label>
+            <div class="option-container">
+              <label class="option-label">
+                <input type="radio" name="q10" value="Commerce">
+                <span class="option-text">Yes</span>
+              </label>
+              <label class="option-label">
+                <input type="radio" name="q10" value="Arts">
+                <span class="option-text">No</span>
+              </label>
+            </div>
+          </div>
+          
+          <button type="submit" class="quiz-submit-btn">
+            <span class="btn-text">Submit Answers</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </form>
+        <div id="streamResult" class="stream-result animate__animated"></div>
+      </div>
     </section>
 
-    <!-- Post Creation -->
-    <section id="createPost">
+    <!-- Post Creation Section -->
+    <section id="createPost" style="display:none" class="animate__animated animate__fadeInUp">
       <h2>Create a Post</h2>
       <input type="text" id="postTitle" placeholder="Post Title"/>
       <textarea id="postContent" placeholder="Post Content"></textarea>
@@ -193,8 +354,8 @@
       <button onclick="createPost()">Post</button>
     </section>
 
-    <!-- Search & Filter -->
-    <section id="search">
+    <!-- Search and Filter Section -->
+    <section id="search" style="display:none" class="animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
       <input type="text" id="searchInput" placeholder="Search posts..."/>
       <button onclick="searchPosts()">Search</button>
       <select id="filterStream" onchange="filterByStream()">
@@ -205,25 +366,27 @@
       </select>
     </section>
 
-    <!-- Post Feed -->
-    <section id="posts">
-      <h2>Student Posts</h2>
+    <!-- Post Feed Section -->
+    <section id="posts" class="animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+
       <div id="postFeed"></div>
     </section>
 
-    <!-- Floating Action Button -->
-    <button id="fab" onclick="scrollToPost()" aria-label="Create new post">＋</button>
+
   </div>
 
 
-  <!-- Scripts (Anime.js for loading animation + Confetti for quiz celebration + Your app logic) -->
+  <!-- External scripts -->
+  <!-- Anime.js for animations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+  <!-- Confetti.js for quiz celebration -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Custom script for the application -->
   <script src="script.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
+<!-- Inline script for intro animation -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  // Intro animation timeline
+  // Intro animation timeline using Anime.js
   anime.timeline({ loop: false })
     .add({
       targets: '.ml8 .letters-left',
@@ -249,7 +412,7 @@ document.addEventListener("DOMContentLoaded", () => {
       easing: "easeOutExpo",
       complete: () => {
         document.getElementById('introAnimation').classList.add('hidden');
-        // ✅ Now your "Please wait and enjoy" animation can run normally
+        // This allows the "Please wait and enjoy" animation to run after the intro
       }
     });
 });
