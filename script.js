@@ -36,7 +36,7 @@ document.getElementById("registerForm").addEventListener("submit", function(e) {
     return;
   }
 
-  users.push({ username, email, password });
+  users.push({ username, email, password, quizResult: null }); // Add quizResult to new user
   localStorage.setItem("users", JSON.stringify(users));
 
   alert("Registration successful! Please log in.");
@@ -93,7 +93,11 @@ const signUpButton = document.getElementById('signUp');
 const signInButton = document.getElementById('signIn');
 const container = document.getElementById('authForm');
 
+console.log('signUpButton:', signUpButton);
+console.log('authForm container:', container);
+
 signUpButton.addEventListener('click', () => {
+	console.log('Sign Up button clicked!');
 	container.classList.add("right-panel-active");
 });
 
@@ -173,6 +177,16 @@ function scrollToPost() {
   document.getElementById("createPost").scrollIntoView({ behavior: "smooth" });
 }
 
+function formatTimestamp(isoString) {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    const options = {
+        year: 'numeric', month: 'long', day: 'numeric', 
+        hour: '2-digit', minute: '2-digit'
+    };
+    return date.toLocaleString(undefined, options);
+}
+
 // Creates a new post and saves it to localStorage
 function createPost() {
   const title = document.getElementById("postTitle").value.trim();
@@ -183,18 +197,23 @@ function createPost() {
     return;
   }
 
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const post = {
     id: Date.now(),
     title,
     content,
     stream,
-    comments: []
+    author: currentUser.email,
+    comments: [],
+    timestamp: new Date().toISOString(),
+    likes: []
   };
 
   const posts = JSON.parse(localStorage.getItem("posts")) || [];
   posts.push(post);
   localStorage.setItem("posts", JSON.stringify(posts));
-  renderPosts();
+  
+  alert("Your post has been posted Pls go to view profile to make changes in it");
 
   document.getElementById("postTitle").value = "";
   document.getElementById("postContent").value = "";
@@ -213,34 +232,109 @@ function searchPosts() {
 
 // Filters posts by the selected stream and renders the results
 function filterByStream() {
-  const stream = document.getElementById("filterStream").value;
-  const posts = JSON.parse(localStorage.getItem("posts")) || [];
-  const filtered = stream ? posts.filter(p => p.stream === stream) : posts;
-  renderPosts(filtered);
+  renderPosts(); // Re-render with the new filter applied
+}
+
+function getCommentHTML(post, comment, index) {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    
+    const isObject = typeof comment === 'object' && comment !== null;
+    const commentText = isObject ? comment.text : comment;
+    const commentAuthor = isObject ? comment.author : null;
+    const commentTimestamp = isObject ? comment.timestamp : null;
+
+    let buttons = '';
+    if (commentAuthor === currentUser.email) {
+        buttons = `
+            <button onclick="editComment(${post.id}, ${index})">✏️</button>
+            <button onclick="deleteComment(${post.id}, ${index})">🗑️</button>
+        `;
+    }
+
+    const timestampHTML = commentTimestamp ? `<small class="comment-timestamp"> - ${formatTimestamp(commentTimestamp)}</small>` : '';
+
+    return `<p>💬 ${commentText} ${buttons} ${timestampHTML}</p>`;
+}
+
+function toggleLike(postId) {
+    let posts = JSON.parse(localStorage.getItem("posts")) || [];
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const post = posts.find(p => p.id === postId);
+
+    if (!post) return;
+
+    if (!post.likes) post.likes = []; // Initialize likes array if it doesn't exist
+
+    const likeIndex = post.likes.indexOf(currentUser.email);
+    if (likeIndex > -1) {
+        post.likes.splice(likeIndex, 1); // Unlike
+    } else {
+        post.likes.push(currentUser.email); // Like
+    }
+
+    localStorage.setItem("posts", JSON.stringify(posts));
+
+    if (document.getElementById('viewProfileBtn').classList.contains('active-nav')) {
+        renderUserPosts();
+    } else {
+        renderPosts();
+    }
 }
 
 // Renders the posts to the post feed
 function renderPosts(data) {
-  const posts = data || JSON.parse(localStorage.getItem("posts")) || [];
+  let posts;
+  if (data) {
+    posts = data;
+  } else {
+    const allPosts = JSON.parse(localStorage.getItem("posts")) || [];
+    const viewPostsBtn = document.getElementById("viewPostsBtn");
+    const createPostBtn = document.getElementById("createPostBtn");
+
+    if (viewPostsBtn.classList.contains("active-nav") || createPostBtn.classList.contains("active-nav")) {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      posts = allPosts.filter(p => !p.author || p.author !== currentUser.email);
+    } else {
+      posts = allPosts;
+    }
+  }
+
+  // Handle filtering
+  const streamFilter = document.getElementById("filterStream").value;
+  if (streamFilter) {
+      posts = posts.filter(p => p.stream === streamFilter);
+  }
+
+  // Handle sorting
+  const sortValue = document.getElementById("sortPosts").value;
+  if (sortValue === 'popular') {
+      posts.sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0));
+  } else {
+      posts.sort((a, b) => b.id - a.id); // Newest first
+  }
+
   const feed = document.getElementById("postFeed");
   feed.innerHTML = "";
 
   posts.forEach(post => {
     const div = document.createElement("div");
     div.className = "post-card";
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const isLiked = post.likes?.includes(currentUser.email);
+
     div.innerHTML = `
       <h3>${post.title}</h3>
       <p>${post.content}</p>
       <small>Stream: ${post.stream} ${emojiMap[post.stream]}</small>
-      <button onclick="editPost(${post.id})">✏️ Edit</button>
-      <button onclick="deletePost(${post.id})">🗑️ Delete</button>
+      <br>
+      <small>Posted on: ${formatTimestamp(post.timestamp)}</small>
+      <div class="post-actions">
+        <button onclick="toggleLike(${post.id})">${isLiked ? '❤️' : '🤍'} ${post.likes?.length || 0}</button>
+        <button onclick="editPost(${post.id})">✏️ Edit</button>
+        <button onclick="deletePost(${post.id})">🗑️ Delete</button>
+      </div>
       <div class="comments">
-        ${post.comments.map((c, i) => `
-          <p>💬 ${c}
-            <button onclick="editComment(${post.id}, ${i})">✏️</button>
-            <button onclick="deleteComment(${post.id}, ${i})">🗑️</button>
-          </p>
-        `).join("")}
+        ${post.comments.map((c, i) => getCommentHTML(post, c, i)).join("")}
       </div>
       <input type="text" placeholder="Add comment" onkeydown="addComment(event, ${post.id})"/>
     `;
@@ -268,22 +362,40 @@ function deletePost(id) {
   let posts = JSON.parse(localStorage.getItem("posts")) || [];
   posts = posts.filter(p => p.id !== id);
   localStorage.setItem("posts", JSON.stringify(posts));
-  renderPosts();
+
+  // Conditionally render the correct view after deletion
+  if (document.getElementById('viewProfileBtn').classList.contains('active-nav')) {
+    renderUserPosts();
+  } else {
+    renderPosts();
+  }
 }
 
 // Adds a comment to a post
 function addComment(e, postId) {
   if (e.key === "Enter") {
-    const comment = e.target.value.trim();
-    if (!comment) return;
+    const commentText = e.target.value.trim();
+    if (!commentText) return;
 
     const posts = JSON.parse(localStorage.getItem("posts")) || [];
     const post = posts.find(p => p.id === postId);
     if (!post) return;
 
-    post.comments.push(comment);
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const newComment = {
+      text: commentText,
+      author: currentUser.email,
+      timestamp: new Date().toISOString()
+    };
+
+    post.comments.push(newComment);
     localStorage.setItem("posts", JSON.stringify(posts));
-    renderPosts();
+
+    if (document.getElementById('viewProfileBtn').classList.contains('active-nav')) {
+        renderUserPosts();
+    } else {
+        renderPosts();
+    }
 
     e.target.value = "";
   }
@@ -295,12 +407,27 @@ function editComment(postId, commentIndex) {
   const post = posts.find(p => p.id === postId);
   if (!post) return;
 
-  const current = post.comments[commentIndex];
-  const updated = prompt("Edit comment:", current);
-  if (updated !== null) {
-    post.comments[commentIndex] = updated;
+  const comment = post.comments[commentIndex];
+  const commentText = (typeof comment === 'string') ? comment : comment.text;
+  const commentAuthor = (typeof comment === 'string') ? null : comment.author;
+
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  if (commentAuthor !== currentUser.email) {
+    alert("You can only edit your own comments.");
+    return;
+  }
+
+  const updatedText = prompt("Edit comment:", commentText);
+  if (updatedText !== null) {
+    comment.text = updatedText;
     localStorage.setItem("posts", JSON.stringify(posts));
-    renderPosts();
+
+    if (document.getElementById('viewProfileBtn').classList.contains('active-nav')) {
+        renderUserPosts();
+    } else {
+        renderPosts();
+    }
   }
 }
 
@@ -310,9 +437,24 @@ function deleteComment(postId, commentIndex) {
   const post = posts.find(p => p.id === postId);
   if (!post) return;
 
+  const comment = post.comments[commentIndex];
+  const commentAuthor = (typeof comment === 'string') ? null : comment.author;
+
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  if (commentAuthor !== currentUser.email) {
+    alert("You can only delete your own comments.");
+    return;
+  }
+
   post.comments.splice(commentIndex, 1);
   localStorage.setItem("posts", JSON.stringify(posts));
-  renderPosts();
+
+  if (document.getElementById('viewProfileBtn').classList.contains('active-nav')) {
+      renderUserPosts();
+  } else {
+      renderPosts();
+  }
 }
 
 // Handles the submission of the career quiz
@@ -342,13 +484,33 @@ document.getElementById("quizForm").addEventListener("submit", function(e) {
 
   const stream = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b);
   
+  const detailedResults = {
+      Science: "Your answers suggest a strong inclination towards the Science stream. You might enjoy careers in Engineering, Medicine, or Scientific Research.",
+      Commerce: "Your answers suggest a strong inclination towards the Commerce stream. You might enjoy careers in Accounting, Finance, or Business Management.",
+      Arts: "Your answers suggest a strong inclination towards the Arts stream. You might enjoy careers in Design, Journalism, or Psychology."
+  };
+
+  const resultText = detailedResults[stream];
+
+  // Save result to user profile
+  let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  let allUsers = JSON.parse(localStorage.getItem("users")) || [];
+  const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
+
+  if (userIndex !== -1) {
+      allUsers[userIndex].quizResult = stream;
+      currentUser.quizResult = stream;
+      localStorage.setItem("users", JSON.stringify(allUsers));
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  }
+
   // Displays the quiz result with an animation
   const resultElement = document.getElementById("streamResult");
   resultElement.classList.remove("error-message");
   resultElement.classList.add("animate__animated", "animate__bounceIn");
   resultElement.innerHTML = `
     <div class="result-icon"><i class="fas fa-graduation-cap"></i></div>
-    <div class="result-text">Suggested Stream: <span class="stream-highlight">${stream} ${emojiMap[stream]}</span></div>
+    <div class="result-text">${resultText}</div>
   `;
   
   // Scrolls to the result and triggers a confetti animation
@@ -367,6 +529,24 @@ function triggerConfetti() {
   }
 }
 
+function populateProfile() {
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  if (!user.username) return;
+
+  document.getElementById("profileUsername").innerText = user.username;
+  document.getElementById("profileEmail").innerText = user.email;
+  document.getElementById("profilePassword").innerText = '••••••••'; // Keep password masked by default
+  
+  const quizResultEl = document.getElementById("profileQuizResult");
+  if (user.quizResult) {
+    quizResultEl.innerText = user.quizResult;
+    quizResultEl.style.fontWeight = 'bold';
+  } else {
+    quizResultEl.innerText = "Not taken yet";
+    quizResultEl.style.fontWeight = 'normal';
+  }
+}
+
 // Initializes the application on page load
 window.addEventListener("load", () => {
   // Restores the theme from localStorage
@@ -382,17 +562,56 @@ window.addEventListener("load", () => {
     document.getElementById("mainApp").style.display = "block";
     if (user.username) {
       document.getElementById("welcomeMessage").innerText = `Welcome back, ${user.username}!`;
-      
-      // Populates the user's profile information
-      document.getElementById("profileUsername").innerText = user.username;
-      document.getElementById("profileEmail").innerText = user.email;
-      document.getElementById("profilePassword").innerText = user.password;
+      populateProfile();
     }
   }
 });
 
+function renderUserPosts() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (!currentUser) return;
+
+  let posts = JSON.parse(localStorage.getItem("posts")) || [];
+  let userPosts = posts.filter(p => p.author === currentUser.email);
+
+  // Sort user's own posts by newest first
+  userPosts.sort((a, b) => b.id - a.id);
+
+  const feed = document.getElementById("userPostsFeed");
+  feed.innerHTML = "";
+
+  if (userPosts.length === 0) {
+    feed.innerHTML = "<p>You haven't created any posts yet.</p>";
+    return;
+  }
+
+  userPosts.forEach(post => {
+    const div = document.createElement("div");
+    div.className = "post-card";
+    const isLiked = post.likes?.includes(currentUser.email);
+
+    div.innerHTML = `
+      <h3>${post.title}</h3>
+      <p>${post.content}</p>
+      <small>Stream: ${post.stream} ${emojiMap[post.stream]}</small>
+      <br>
+      <small>Posted on: ${formatTimestamp(post.timestamp)}</small>
+      <div class="post-actions">
+        <button onclick="toggleLike(${post.id})">${isLiked ? '❤️' : '🤍'} ${post.likes?.length || 0}</button>
+        <button onclick="editPost(${post.id})">✏️ Edit</button>
+        <button onclick="deletePost(${post.id})">🗑️ Delete</button>
+      </div>
+      <div class="comments">
+        ${post.comments.map((c, i) => getCommentHTML(post, c, i)).join("")}
+      </div>
+      <input type="text" placeholder="Add comment" onkeydown="addComment(event, ${post.id})"/>
+    `;
+    feed.appendChild(div);
+  });
+}
+
 // Handles navigation between sections
-const navButtons = ["homeBtn", "viewProfileBtn", "viewQuizBtn", "viewPostsBtn", "createPostBtn", "searchPostsBtn"];
+const navButtons = ["homeBtn", "viewProfileBtn", "viewQuizBtn", "roadmapsBtn", "viewPostsBtn", "createPostBtn", "searchPostsBtn", "alumniExperienceBtn"];
 
 navButtons.forEach(buttonId => {
   document.getElementById(buttonId).addEventListener("click", (event) => {
@@ -404,9 +623,17 @@ navButtons.forEach(buttonId => {
     document.getElementById("createPost").style.display = "none";
     document.getElementById("search").style.display = "none";
     document.getElementById("posts").style.display = "none";
+    document.getElementById("roadmaps").style.display = "none";
+    document.getElementById("alumniExperience").style.display = "none";
+    document.getElementById("alumni-start").style.display = "none";
+    document.getElementById("alumni-q1-stream").style.display = "none";
+    document.getElementById("alumni-q2-details").style.display = "none";
 
     // Remove active class from all buttons
-    navButtons.forEach(id => document.getElementById(id).classList.remove("active-nav"));
+    navButtons.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.classList.remove("active-nav");
+    });
 
     if (clickedButton.classList.contains("active-nav")) {
       // If already active, clicking again hides everything (go to "home page")
@@ -421,9 +648,15 @@ navButtons.forEach(buttonId => {
               break;
         case "viewProfileBtn":
           document.getElementById("profile").style.display = "block";
+          populateProfile();
+          renderUserPosts();
           break;
         case "viewQuizBtn":
           document.getElementById("quiz").style.display = "block";
+          break;
+        case "roadmapsBtn":
+          document.getElementById("roadmaps").style.display = "block";
+          renderRoadmaps();
           break;
         case "viewPostsBtn":
           document.getElementById("posts").style.display = "block";
@@ -434,17 +667,20 @@ navButtons.forEach(buttonId => {
           document.getElementById("posts").style.display = "block";
           renderPosts();
           break;
-        case "searchPostsBtn":
-          document.getElementById("search").style.display = "block";
-          document.getElementById("posts").style.display = "block";
-          renderPosts();
-          break;
-      }
-    }
-  });
-});
+          case "searchPostsBtn":
+            document.getElementById("search").style.display = "block";
+            document.getElementById("posts").style.display = "block";
+            renderPosts(); // Initial render for search view
+            break;
+        case "alumniExperienceBtn":
+            document.getElementById("alumniExperience").style.display = "block";
+            renderAlumniStories();
+            break;
+      } // Closing brace for switch statement
+    } // Closing brace for else block
+  }); // Closing brace for navButtons.forEach
+}); // Missing closing brace for navButtons.forEach
 
-// Toggles the visibility of the password in the profile section
 document.getElementById("togglePassword").addEventListener("click", function() {
   const passwordField = document.getElementById("profilePassword");
   const icon = this.querySelector("i");
@@ -551,3 +787,181 @@ document.getElementById("deleteAccountBtn").addEventListener("click", () => {
   alert("Your account has been deleted permanently.");
   location.reload();
 });
+
+const roadmapsData = [
+    {
+        title: "Software Engineer",
+        steps: [
+            "Complete 12th Grade with a focus on Math and Physics.",
+            "Pursue a Bachelor's degree in Computer Science or a related field.",
+            "Learn core programming languages like Python, Java, or C++.",
+            "Build personal projects and contribute to open-source.",
+            "Complete internships to gain practical experience.",
+            "Prepare for technical interviews (Data Structures & Algorithms).",
+            "Apply for entry-level software engineering roles."
+        ]
+    },
+    {
+        title: "Chartered Accountant (CA)",
+        steps: [
+            "Clear 12th Grade in Commerce.",
+            "Register for the CA Foundation course after 12th.",
+            "Clear the CA Foundation exam.",
+            "Register for the CA Intermediate course.",
+            "Complete three years of practical training (articleship) under a practicing CA.",
+            "Clear both groups of the CA Intermediate exam.",
+            "Register for and clear the CA Final exam."
+        ]
+    },
+    {
+        title: "Graphic Designer",
+        steps: [
+            "Develop a strong foundation in drawing and art fundamentals.",
+            "Pursue a degree or diploma in Graphic Design, Fine Arts, or a related field.",
+            "Master industry-standard software like Adobe Photoshop, Illustrator, and InDesign.",
+            "Build a strong portfolio showcasing a variety of design work.",
+            "Do freelance projects or internships to gain real-world experience.",
+            "Network with other designers and professionals in the industry.",
+            "Apply for junior designer roles or start a freelance business."
+        ]
+    },
+    {
+        title: "Doctor (MBBS)",
+        steps: [
+            "Complete 12th Grade with Physics, Chemistry, and Biology (PCB).",
+            "Qualify the NEET (National Eligibility cum Entrance Test) exam.",
+            "Complete the 5.5-year MBBS degree program.",
+            "Complete a one-year compulsory rotating internship.",
+            "Register with the Medical Council of India (MCI) or State Medical Council.",
+            "Optional: Pursue post-graduation (MD/MS) for specialization.",
+            "Practice as a registered medical doctor."
+        ]
+    },
+    {
+        title: "Lawyer",
+        steps: [
+            "Complete 12th Grade from any stream.",
+            "Appear for law entrance exams like CLAT, AILET, LSAT.",
+            "Pursue a 5-year integrated LLB or a 3-year LLB after graduation.",
+            "Enroll with a State Bar Council.",
+            "Pass the All India Bar Examination (AIBE).",
+            "Practice as an advocate in courts or join a law firm."
+        ]
+    },
+    {
+        title: "Data Scientist",
+        steps: [
+            "Obtain a Bachelor's degree in a quantitative field (e.g., Computer Science, Stats).",
+            "Master programming languages like Python or R.",
+            "Learn statistics, probability, and machine learning concepts.",
+            "Gain proficiency in data analysis libraries (e.g., Pandas, NumPy).",
+            "Learn data visualization tools (e.g., Tableau, Matplotlib).",
+            "Build a portfolio of data science projects.",
+            "Consider a Master's degree or specialized certification."
+        ]
+    }
+];
+
+function renderRoadmaps() {
+    const container = document.getElementById('roadmapsContainer');
+    container.innerHTML = '';
+    roadmapsData.forEach(roadmap => {
+        const card = document.createElement('div');
+        card.className = 'roadmap-card';
+        
+        const title = document.createElement('h3');
+        title.className = 'roadmap-title';
+        title.textContent = roadmap.title;
+        card.appendChild(title);
+        
+        const stepsList = document.createElement('ul');
+        stepsList.className = 'roadmap-steps';
+        
+        roadmap.steps.forEach(stepText => {
+            const step = document.createElement('li');
+            step.className = 'roadmap-step';
+            step.textContent = stepText;
+            stepsList.appendChild(step);
+        });
+        
+        card.appendChild(stepsList);
+        container.appendChild(card);
+    });
+}
+
+// --- Alumni Feature Listeners ---
+let alumniStoryData = {};
+
+document.getElementById('addAlumniStoryBtn').addEventListener('click', () => {
+    document.getElementById('roadmaps').style.display = 'none';
+    document.getElementById('alumni-start').style.display = 'block';
+    document.getElementById('roadmapsBtn').classList.remove('active-nav');
+});
+
+document.getElementById('alumni-no-btn').addEventListener('click', () => {
+    document.getElementById('alumni-start').style.display = 'none';
+    document.getElementById('viewProfileBtn').click();
+});
+
+document.getElementById('alumni-yes-btn').addEventListener('click', () => {
+    document.getElementById('alumni-start').style.display = 'none';
+    document.getElementById('alumni-q1-stream').style.display = 'block';
+});
+
+document.querySelectorAll('.stream-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+        const stream = e.target.dataset.stream;
+        if (confirm(`You selected ${stream}. Is this correct?`)) {
+            alumniStoryData.stream = stream;
+            document.getElementById('alumni-q1-stream').style.display = 'none';
+            document.getElementById('alumni-q2-details').style.display = 'block';
+        }
+    });
+});
+
+document.getElementById('alumni-details-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    alumniStoryData.whyStream = document.getElementById('whyStream').value;
+    alumniStoryData.regret = document.getElementById('regretStream').value;
+    alumniStoryData.currentStatus = document.getElementById('currentStatus').value;
+
+    alert("Thank you for sharing your story! Your experience will help guide others.");
+    
+    const alumniStories = JSON.parse(localStorage.getItem("alumniStories")) || [];
+    alumniStories.push(alumniStoryData);
+    localStorage.setItem("alumniStories", JSON.stringify(alumniStories));
+
+    console.log("Collected Alumni Story:", alumniStoryData);
+
+    // Reset and hide form
+    document.getElementById('alumni-details-form').reset();
+    document.getElementById('alumni-q2-details').style.display = 'none';
+    document.getElementById('homeBtn').click();
+});
+
+function renderAlumniStories() {
+    const container = document.getElementById('alumniExperienceContainer');
+    container.innerHTML = '';
+    const stories = JSON.parse(localStorage.getItem("alumniStories")) || [];
+
+    if (stories.length === 0) {
+        container.innerHTML = "<p>No alumni stories have been shared yet.</p>";
+        return;
+    }
+
+    stories.forEach(story => {
+        const card = document.createElement('div');
+        card.className = 'alumni-story-card';
+        
+        card.innerHTML = `
+            <h3>Stream: ${story.stream}</h3>
+            <p><strong>Why this stream?</strong> ${story.whyStream}</p>
+            <p><strong>Any regrets?</strong> ${story.regret}</p>
+            <p><strong>Current Status:</strong> ${story.currentStatus}</p>
+        `;
+        
+        container.appendChild(card);
+    });
+}
+
+
