@@ -145,24 +145,50 @@ input[type="radio"] {
 }
 
 .nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.8rem 1.5rem;
-  background: linear-gradient(45deg, #3498db, #2980b9); /* Gradient background */
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
-  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  border: 2px solid transparent;
+  border-radius: 50px; /* Pill shape */
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  letter-spacing: 0.5px; /* Slightly increased letter spacing */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Initial subtle shadow */
+  position: relative;
+  overflow: hidden;
 }
 
-.nav-btn:hover {
-  background: linear-gradient(45deg, #2980b9, #3498db); /* Shifted gradient on hover */
-  transform: translateY(-4px) scale(1.02); /* More pronounced lift and slight scale */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
-  border-color: rgba(255, 255, 255, 0.6); /* Border brightens on hover */
+.nav-btn:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: var(--text);
+    transition: width 0.3s ease;
+}
+
+.nav-btn:hover:before, .nav-btn.active-nav:before {
+    width: 80%;
+}
+
+.nav-btn:hover, .nav-btn.active-nav {
+  color: var(--text);
+  background: rgba(128, 128, 128, 0.1);
+}
+
+.nav-btn i {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.nav-btn:hover i {
+  transform: scale(1.1);
 }
 
 /* Profile section styles */
@@ -251,7 +277,7 @@ button:hover {
 /* Custom radio button styles */
 .option-text {
   position: relative;
-  padding-right: 15px;
+  padding-right: 25px;
 }
 
 .option-text:after {
@@ -260,10 +286,10 @@ button:hover {
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  font-size: 24px;
-  line-height: 20px;
+  width: 25px;
+  height: 25px;
+  font-size: 30px;
+  line-height: 25px;
   text-align: center;
   color: var(--text);
   transition: all 0.3s ease;
@@ -280,17 +306,17 @@ section {
 }
 
 /* Post card styles */
-#postFeed > div {
+#postFeed > div, .post-card {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   margin: 0.5rem 0;
-  padding: 0.5rem;
-  border-radius: 6px;
+  padding: 1rem;
+  border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-#postFeed > div:hover {
+#postFeed > div:hover, .post-card:hover {
   transform: scale(1.02);
 }
 .comment {
@@ -299,29 +325,41 @@ section {
   color: var(--text);
 }
 
+.post-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.post-actions button {
+    margin: 0;
+    padding: 5px 10px;
+}
+
+
 /* Floating action button styles */
-#fab {
-  position: fixed;
+.fab {
+  position: absolute;
   bottom: 20px;
   right: 20px;
-  font-size: 2rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
   background-color: #3498db;
   color: white;
-  border: none;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  font-size: 24px;
+  line-height: 56px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   cursor: pointer;
-  z-index: 1000;
-  transition: transform 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+  border: none;
+  transition: all 0.3s ease;
 }
-#fab:hover {
+
+.fab:hover {
   transform: scale(1.1);
+  background-color: #2980b9;
 }
 
 /* New login/register form styles */
@@ -739,4 +777,132 @@ section {
     transition: background-color 0.3s ease;
     background-color: #444;
     color: #fff;
+}
+
+.comment-timestamp {
+  font-size: 0.8em;
+  color: #888;
+}
+
+[data-theme='dark'] .comment-timestamp {
+  color: #aaa;
+}
+
+#createPost, #search, #quiz, #roadmaps {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.roadmap-card {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.roadmap-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.roadmap-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.roadmap-steps {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.roadmap-step {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.roadmap-step:last-child {
+    border-bottom: none;
+}
+
+#roadmaps {
+  position: relative;
+}
+
+#alumni-start .alumni-prompt {
+  text-align: center;
+  padding: 2rem;
+}
+
+#alumni-start .alumni-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+#alumni-start .action-btn {
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+}
+
+#alumni-start .action-btn.secondary {
+    background-color: #7f8c8d;
+}
+
+#alumni-start .action-btn.secondary:hover {
+    background-color: #95a5a6;
+}
+
+#alumni-q1-stream, #alumni-q2-details {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+#alumni-q2-details label {
+    display: block;
+    margin-top: 1.5rem;
+    font-weight: 600;
+}
+
+#alumniExperience {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+
+.alumni-story-card {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.alumni-story-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.alumni-story-card h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.alumni-story-card p {
+    margin-bottom: 0.5rem;
 }
