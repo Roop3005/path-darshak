@@ -906,3 +906,35 @@ section {
 .alumni-story-card p {
     margin-bottom: 0.5rem;
 }
+
+.alumni-story-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.alumni-story-actions .action-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.alumni-story-actions .edit-alumni-story-btn {
+    background-color: #3498db;
+    color: white;
+}
+
+.alumni-story-actions .edit-alumni-story-btn:hover {
+    background-color: #2980b9;
+}
+
+.alumni-story-actions .delete-alumni-story-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.alumni-story-actions .delete-alumni-story-btn:hover {
+    background-color: #c0392b;
+}
