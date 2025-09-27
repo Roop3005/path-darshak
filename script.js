@@ -348,6 +348,12 @@ function editPost(id) {
   const post = posts.find(p => p.id === id);
   if (!post) return;
 
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (!currentUser || currentUser.email !== post.author) {
+    alert("You can only edit your own posts.");
+    return;
+  }
+
   const newTitle = prompt("Edit title:", post.title);
   const newContent = prompt("Edit content:", post.content);
   if (newTitle !== null) post.title = newTitle;
@@ -360,6 +366,15 @@ function editPost(id) {
 // Deletes a post from localStorage
 function deletePost(id) {
   let posts = JSON.parse(localStorage.getItem("posts")) || [];
+  const post = posts.find(p => p.id === id);
+  if (!post) return;
+
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (!currentUser || currentUser.email !== post.author) {
+    alert("You can only delete your own posts.");
+    return;
+  }
+
   posts = posts.filter(p => p.id !== id);
   localStorage.setItem("posts", JSON.stringify(posts));
 
@@ -408,16 +423,14 @@ function editComment(postId, commentIndex) {
   if (!post) return;
 
   const comment = post.comments[commentIndex];
-  const commentText = (typeof comment === 'string') ? comment : comment.text;
-  const commentAuthor = (typeof comment === 'string') ? null : comment.author;
-
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-  if (commentAuthor !== currentUser.email) {
+  if (!currentUser || currentUser.email !== comment.author) {
     alert("You can only edit your own comments.");
     return;
   }
 
+  const commentText = (typeof comment === 'string') ? comment : comment.text;
   const updatedText = prompt("Edit comment:", commentText);
   if (updatedText !== null) {
     comment.text = updatedText;
@@ -438,11 +451,9 @@ function deleteComment(postId, commentIndex) {
   if (!post) return;
 
   const comment = post.comments[commentIndex];
-  const commentAuthor = (typeof comment === 'string') ? null : comment.author;
-
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-  if (commentAuthor !== currentUser.email) {
+  if (!currentUser || currentUser.email !== comment.author) {
     alert("You can only delete your own comments.");
     return;
   }
@@ -924,6 +935,11 @@ document.getElementById('alumni-details-form').addEventListener('submit', (e) =>
     alumniStoryData.whyStream = document.getElementById('whyStream').value;
     alumniStoryData.regret = document.getElementById('regretStream').value;
     alumniStoryData.currentStatus = document.getElementById('currentStatus').value;
+    alumniStoryData.alumniName = document.getElementById('alumniName').value.trim(); // Get alumni name
+
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    alumniStoryData.id = Date.now(); // Assign a unique ID
+    alumniStoryData.author = currentUser.email; // Assign the author
 
     alert("Thank you for sharing your story! Your experience will help guide others.");
     
@@ -943,6 +959,7 @@ function renderAlumniStories() {
     const container = document.getElementById('alumniExperienceContainer');
     container.innerHTML = '';
     const stories = JSON.parse(localStorage.getItem("alumniStories")) || [];
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
     if (stories.length === 0) {
         container.innerHTML = "<p>No alumni stories have been shared yet.</p>";
@@ -953,15 +970,105 @@ function renderAlumniStories() {
         const card = document.createElement('div');
         card.className = 'alumni-story-card';
         
+        let actionButtons = '';
+        if (currentUser && currentUser.email === story.author) {
+            actionButtons = `
+                <div class="alumni-story-actions">
+                    <button onclick="editAlumniStory(${story.id})" class="action-btn edit-alumni-story-btn">Edit</button>
+                    <button onclick="deleteAlumniStory(${story.id})" class="action-btn delete-alumni-story-btn">Delete</button>
+                </div>
+            `;
+        }
+
         card.innerHTML = `
             <h3>Stream: ${story.stream}</h3>
+            ${story.alumniName ? `<p><strong>Alumni Name:</strong> ${story.alumniName}</p>` : ''}
             <p><strong>Why this stream?</strong> ${story.whyStream}</p>
             <p><strong>Any regrets?</strong> ${story.regret}</p>
             <p><strong>Current Status:</strong> ${story.currentStatus}</p>
+            ${actionButtons}
         `;
         
         container.appendChild(card);
     });
 }
+
+function editAlumniStory(id) {
+    let stories = JSON.parse(localStorage.getItem("alumniStories")) || [];
+    const storyIndex = stories.findIndex(s => s.id === id);
+
+    if (storyIndex === -1) {
+        alert("Story not found.");
+        return;
+    }
+
+    const story = stories[storyIndex];
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (!currentUser || currentUser.email !== story.author) {
+        alert("You can only edit your own alumni stories.");
+        return;
+    }
+
+    const newWhyStream = prompt("Edit 'Why this stream?':", story.whyStream);
+    const newRegret = prompt("Edit 'Any regrets?':", story.regret);
+    const newCurrentStatus = prompt("Edit 'Current Status?':", story.currentStatus);
+    const newAlumniName = prompt("Edit 'Alumni Name?':", story.alumniName);
+
+    if (newWhyStream !== null) story.whyStream = newWhyStream;
+    if (newRegret !== null) story.regret = newRegret;
+    if (newCurrentStatus !== null) story.currentStatus = newCurrentStatus;
+    if (newAlumniName !== null) story.alumniName = newAlumniName;
+
+    stories[storyIndex] = story;
+    localStorage.setItem("alumniStories", JSON.stringify(stories));
+    renderAlumniStories();
+    alert("Alumni story updated successfully!");
+}
+
+function deleteAlumniStory(id) {
+    let stories = JSON.parse(localStorage.getItem("alumniStories")) || [];
+    const storyIndex = stories.findIndex(s => s.id === id);
+
+    if (storyIndex === -1) {
+        alert("Story not found.");
+        return;
+    }
+
+    const story = stories[storyIndex];
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (!currentUser || currentUser.email !== story.author) {
+        alert("You can only delete your own alumni stories.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to delete this alumni story?")) {
+        return;
+    }
+
+    stories = stories.filter(s => s.id !== id);
+    localStorage.setItem("alumniStories", JSON.stringify(stories));
+    renderAlumniStories();
+    alert("Alumni story deleted successfully!");
+}
+
+// Function to clear all alumni stories from localStorage
+function clearAlumniStories() {
+    if (confirm("Are you sure you want to clear ALL alumni stories? This cannot be undone.")) {
+        localStorage.removeItem("alumniStories");
+        renderAlumniStories();
+        alert("All alumni stories have been cleared.");
+    }
+}
+
+// Event listener for the new clear button
+document.addEventListener('DOMContentLoaded', () => {
+    const clearBtn = document.getElementById('clearAlumniStoriesBtn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', clearAlumniStories);
+    }
+});
+
 
 
