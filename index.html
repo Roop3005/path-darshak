@@ -146,12 +146,16 @@
     
             
         <!-- Navigation Menu -->
-        <div class="nav-menu">              <button id="homeBtn" class="nav-btn">Home</button>
-              <button id="viewProfileBtn" class="nav-btn">View Profile</button>      <button id="viewQuizBtn" class="nav-btn">Quiz</button>
-      <button id="viewPostsBtn" class="nav-btn">View Posts</button>
-      <button id="createPostBtn" class="nav-btn">Create Post</button>
-      <button id="searchPostsBtn" class="nav-btn">Search Posts</button>
-    </div>
+        <div class="nav-menu">
+              <button id="homeBtn" class="nav-btn"><i class="fas fa-home"></i> Home</button>
+              <button id="viewProfileBtn" class="nav-btn"><i class="fas fa-user"></i> View Profile</button>
+              <button id="viewQuizBtn" class="nav-btn"><i class="fas fa-question-circle"></i> Quiz</button>
+              <button id="roadmapsBtn" class="nav-btn"><i class="fas fa-map-signs"></i> Roadmaps</button>
+              <button id="viewPostsBtn" class="nav-btn"><i class="fas fa-list-alt"></i> View Posts</button>
+              <button id="createPostBtn" class="nav-btn"><i class="fas fa-plus-square"></i> Create Post</button>
+              <button id="searchPostsBtn" class="nav-btn"><i class="fas fa-search"></i> Search Posts</button>
+              <button id="alumniExperienceBtn" class="nav-btn"><i class="fas fa-user-tie"></i> Alumni Experience</button>
+        </div>
 
     <!-- User Profile Section -->
     <section id="profile" style="display:none" class="animate__animated animate__fadeIn">
@@ -180,9 +184,20 @@
             <button id="togglePassword" class="toggle-password"><i class="fas fa-eye"></i></button>
           </div>
         </div>
+        <div class="profile-item animate__animated animate__fadeInLeft" style="animation-delay: 0.6s">
+          <div class="profile-icon"><i class="fas fa-graduation-cap"></i></div>
+          <div class="profile-content">
+            <span class="profile-label">Suggested Stream</span>
+            <span id="profileQuizResult" class="profile-value">Not taken yet</span>
+          </div>
+        </div>
       </div>
       <div class="profile-actions">
         <button id="updateProfileBtn" class="action-btn update-profile-btn"><i class="fas fa-save"></i> Update Profile</button>
+      </div>
+      <div id="userPosts" style="margin-top: 2rem;">
+        <h3 class="section-title" style="margin-bottom: 1rem;">Your Posts</h3>
+        <div id="userPostsFeed"></div>
       </div>
     </section>
 
@@ -364,12 +379,72 @@
         <option value="Commerce">Commerce</option>
         <option value="Arts">Arts</option>
       </select>
+      <select id="sortPosts" onchange="renderPosts()">
+        <option value="newest">Most Recent</option>
+        <option value="popular">Most Popular</option>
+      </select>
     </section>
 
     <!-- Post Feed Section -->
     <section id="posts" class="animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
 
       <div id="postFeed"></div>
+    </section>
+
+    <!-- Career Roadmaps Section -->
+    <section id="roadmaps" style="display:none" class="animate__animated animate__fadeInUp">
+      <h2 class="section-title"><i class="fas fa-map-signs"></i> Career Roadmaps</h2>
+      <div id="roadmapsContainer"></div>
+      <button id="addAlumniStoryBtn" class="fab">+</button>
+    </section>
+
+    <!-- Alumni Experience Section -->
+    <section id="alumniExperience" style="display:none" class="animate__animated animate__fadeInUp">
+      <h2 class="section-title"><i class="fas fa-user-tie"></i> Alumni Experiences</h2>
+      <div id="alumniExperienceContainer"></div>
+    </section>
+
+    <!-- Alumni Start Section -->
+    <section id="alumni-start" style="display:none" class="animate__animated animate__fadeInUp">
+      <h2 class="section-title">Share Your Story</h2>
+      <div class="alumni-prompt">
+        <h3>Are you an alumni or a senior student willing to share your experience?</h3>
+        <p>Your journey can help guide others. Please consider contributing.</p>
+        <div class="alumni-actions">
+          <button id="alumni-yes-btn" class="action-btn">Yes, I'll Share</button>
+          <button id="alumni-no-btn" class="action-btn secondary">No, Thanks</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Alumni Questionnaire - Stream -->
+    <section id="alumni-q1-stream" style="display:none" class="animate__animated animate__fadeInUp">
+      <h2 class="section-title">Your Journey: Step 1</h2>
+      <div class="alumni-prompt">
+        <h3>Which stream did you have in 11th?</h3>
+        <div class="alumni-actions">
+          <button class="action-btn stream-btn" data-stream="Science">Science</button>
+          <button class="action-btn stream-btn" data-stream="Commerce">Commerce</button>
+          <button class="action-btn stream-btn" data-stream="Arts">Arts</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Alumni Questionnaire - Details -->
+    <section id="alumni-q2-details" style="display:none" class="animate__animated animate__fadeInUp">
+      <h2 class="section-title">Your Journey: Step 2</h2>
+      <form id="alumni-details-form" class="alumni-prompt">
+        <label for="whyStream">Why did you take that stream?</label>
+        <textarea id="whyStream" rows="4" required></textarea>
+
+        <label for="regretStream">Did you regret taking it? Please give your honest answer.</label>
+        <textarea id="regretStream" rows="4" required></textarea>
+
+        <label for="currentStatus">What are you doing right now (e.g., 12th class, college, job)?</label>
+        <input type="text" id="currentStatus" required/>
+
+        <button type="submit" class="action-btn">Submit My Story</button>
+      </form>
     </section>
 
 
