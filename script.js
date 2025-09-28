@@ -873,6 +873,30 @@ document.getElementById("deleteAccountBtn").addEventListener("click", () => {
   localStorage.removeItem("currentUser");
 
   alert("Your account has been deleted permanently.");
+  // Mobile-first: After deletion, redirect phones to the Sign Up panel
+  try {
+    const isMobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+    if (isMobile) {
+      // Ensure app switches to auth view without reload
+      document.body.classList.remove('logged-in');
+      // Optionally clear the flag so mobile defaults to Sign Up next time as well
+      try { localStorage.removeItem('hasSignedUp'); } catch (_) {}
+      const authContainer = document.getElementById('authForm');
+      if (authContainer) {
+        authContainer.classList.add('right-panel-active'); // show Sign Up panel
+      }
+      // Hide main app if still visible
+      const mainEl = document.getElementById('mainApp');
+      if (mainEl) {
+        // Rely on CSS tied to logged-in class; no extra style changes required
+      }
+      // Scroll to top to bring auth into view
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return; // Do not reload on mobile
+    }
+  } catch (_) {}
+
+  // Desktop and larger screens: keep existing behavior
   location.reload();
 });
 
