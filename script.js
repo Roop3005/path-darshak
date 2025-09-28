@@ -192,6 +192,21 @@ document.addEventListener("DOMContentLoaded", () => {
         initialLoad(); // Trigger app load animation
     } else {
         document.body.classList.remove("logged-in");
+        // Mobile-first auth flow: show Sign Up first for users who haven't registered yet
+        try {
+            const isMobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+            const hasSignedUp = localStorage.getItem('hasSignedUp') === 'true';
+            const authContainer = document.getElementById('authForm');
+            if (authContainer) {
+                if (isMobile && !hasSignedUp) {
+                    // Show Sign Up panel first on phones
+                    authContainer.classList.add('right-panel-active');
+                } else {
+                    // Default to Sign In
+                    authContainer.classList.remove('right-panel-active');
+                }
+            }
+        } catch (e) {}
     }
 
     // Theme toggle
@@ -243,6 +258,9 @@ document.getElementById("registerForm").addEventListener("submit", function(e) {
 
   users.push({ username, email, password, quizResult: null });
   localStorage.setItem("users", JSON.stringify(users));
+
+  // Mark that this device has completed sign-up once
+  try { localStorage.setItem('hasSignedUp', 'true'); } catch (_) {}
 
   alert("Registration successful! Please log in.");
   document.getElementById('authForm').classList.remove("right-panel-active");
