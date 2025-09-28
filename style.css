@@ -1,12 +1,12 @@
 /* Futuristic UI Style */
 :root {
-    --bg-color: #0f0f1a;
-    --primary-color: #8a2be2;
-    --secondary-color: #4d4dff;
-    --text-color: #e0e0e0;
-    --container-bg: rgba(20, 20, 30, 0.8);
-    --border-color: rgba(138, 43, 226, 0.3);
-    --shadow-color: rgba(138, 43, 226, 0.5);
+    --bg-color: #0e1422; /* deep navy for contrast */
+    --primary-color: #5AA9FF; /* soft blue */
+    --secondary-color: #A3C9FF; /* lighter soft blue */
+    --text-color: #eaf2ff; /* light text with a blue tint */
+    --container-bg: rgba(14, 20, 34, 0.82);
+    --border-color: rgba(90, 169, 255, 0.3);
+    --shadow-color: rgba(90, 169, 255, 0.5);
 }
 
 /* Better touch experience: larger tap targets and active feedback on touch devices */
@@ -51,13 +51,13 @@
 }
 
 :root[data-theme='light'] {
-    --bg-color: #e0e0f0;
-    --primary-color: #6a0dad;
-    --secondary-color: #4169e1;
-    --text-color: #1a1a1a;
-    --container-bg: rgba(255, 255, 255, 0.8);
-    --border-color: rgba(106, 13, 173, 0.3);
-    --shadow-color: rgba(106, 13, 173, 0.5);
+    --bg-color: #eaf3ff; /* soft blue background */
+    --primary-color: #3D8BFF; /* slightly stronger for buttons */
+    --secondary-color: #7FB6FF;
+    --text-color: #132031; /* deep slate for legibility */
+    --container-bg: rgba(255, 255, 255, 0.9);
+    --border-color: rgba(61, 139, 255, 0.3);
+    --shadow-color: rgba(61, 139, 255, 0.5);
 }
 
 body {
@@ -76,7 +76,12 @@ body {
     width: 100%;
     height: 100%;
     z-index: -1;
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), #23a6d5, #23d5ab);
+    background: linear-gradient(45deg,
+      var(--primary-color),
+      var(--secondary-color),
+      #B3D4FF, /* soft light blue */
+      #E6F2FF  /* very light blue */
+    );
     background-size: 400% 400%;
     animation: gradient 20s ease infinite;
 }
@@ -107,6 +112,7 @@ body {
     background: var(--container-bg);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-color);
+    z-index: 2000; /* keep header and settings menu above content */
 }
 
 .center-title {
@@ -121,6 +127,62 @@ body {
     gap: 1rem;
 }
 
+/* Settings dropdown */
+.settings-container {
+    position: relative;
+    z-index: 4000; /* ensure above content */
+}
+
+.settings-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.settings-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 200px;
+    background: var(--container-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    padding: 0.5rem;
+    display: none;
+    z-index: 5000; /* higher than header and sections */
+    backdrop-filter: blur(10px);
+    pointer-events: auto;
+}
+
+.settings-menu.open { display: block; }
+
+.settings-menu button {
+    width: 100%;
+    text-align: left;
+    margin: 0.25rem 0;
+    padding: 0.6rem 0.8rem;
+    background: rgba(0,0,0,0.1);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    opacity: 1 !important;
+    pointer-events: auto;
+    font-weight: 600;
+}
+
+.settings-menu button:hover {
+    background: var(--primary-color);
+    color: #ffffff;
+}
+
 .nav-menu {
     grid-area: nav;
     display: flex;
@@ -129,6 +191,52 @@ body {
     background: var(--container-bg);
     backdrop-filter: blur(10px);
     border-right: 1px solid var(--border-color);
+}
+
+/* Collapsible nav group (Posts) */
+.nav-group {
+    margin-top: 0.5rem;
+}
+
+.nav-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: rgba(0,0,0,0.1);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.nav-group-header .caret {
+    margin-left: auto;
+    transition: transform 0.25s ease;
+}
+
+.nav-submenu {
+    display: block;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease;
+    margin-top: 0.35rem;
+}
+
+.nav-group.open .nav-submenu {
+    max-height: 400px; /* enough to show all submenu items */
+}
+
+.nav-group.open .nav-group-header .caret {
+    transform: rotate(180deg);
+}
+
+.nav-submenu .nav-btn {
+    padding-left: 2.25rem;
+    font-size: 0.95rem;
 }
 
 .nav-btn {
@@ -184,6 +292,8 @@ section {
     visibility: visible;
     opacity: 1;
 }
+
+/* Home Feed uses default section sizing (reverted) */
 
 h2.section-title {
     font-size: 2rem;
@@ -568,6 +678,8 @@ body:not(.logged-in) {
     padding: 1rem;
   }
 
+  /* Home Feed uses default section sizing on mobile (reverted) */
+
   /* Auth form tighter on mobile */
   #authForm.container {
     width: 95%;
@@ -628,4 +740,68 @@ body:not(.logged-in) {
   .profile-info {
     grid-template-columns: 1fr;
   }
+}
+
+
+/* Custom Modal */
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  backdrop-filter: blur(5px);
+}
+.custom-modal-content {
+  background: var(--container-bg);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+.custom-modal-content h3 {
+  color: var(--primary-color);
+  margin-top: 0;
+  font-size: 1.5rem;
+}
+.custom-modal-content p {
+  margin: 1rem 0;
+  font-size: 1rem;
+}
+.custom-modal-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.custom-modal-buttons button {
+  margin-top: 0;
+  padding: 0.7rem 2rem;
+}
+#customModalCancelBtn {
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+#customModalInput {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 1rem;
+    box-sizing: border-box;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: rgba(0,0,0,0.2);
+    color: var(--text-color);
 }
