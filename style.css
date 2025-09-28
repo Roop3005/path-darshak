@@ -490,6 +490,11 @@ body.logged-in #authForm {
     display: none;
 }
 
+/* Allow scrolling when on the auth (logged-out) screen so long forms work on phones */
+body:not(.logged-in) {
+    overflow: auto;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
     width: 8px;
@@ -570,6 +575,35 @@ body.logged-in #authForm {
   }
   #authForm form {
     padding: 0 24px;
+  }
+
+  /* Mobile-first auth layout: stack forms, hide overlay, toggle via display */
+  #authForm .overlay-container {
+    display: none;
+  }
+  #authForm .form-container {
+    position: static;
+    width: 100%;
+    height: auto;
+    opacity: 1;
+    transform: none !important;
+  }
+  /* Default to showing Sign In, hide Sign Up */
+  #authForm .sign-up-container {
+    display: none;
+  }
+  /* When toggled, show Sign Up and hide Sign In */
+  #authForm.container.right-panel-active .sign-in-container {
+    display: none;
+  }
+  #authForm.container.right-panel-active .sign-up-container {
+    display: block;
+  }
+  /* Ensure forgot-password occupies full width when shown */
+  #authForm .forgot-password-container {
+    width: 100%;
+    position: static;
+    height: auto;
   }
 }
 
