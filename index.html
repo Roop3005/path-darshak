@@ -78,9 +78,16 @@
         <header class="header-bar">
             <h1 class="center-title">PathPradarshak</h1>
             <div class="header-actions">
-                <button class="darkToggle" aria-label="Toggle dark mode">🌙</button>
-                <button id="logoutBtn">Logout</button>
-                <button id="deleteAccountBtn">Delete Account</button>
+                <button id="searchPostsBtn" class="nav-btn"><i class="fas fa-search"></i> Search Posts</button>
+                <button id="createPostBtn" class="nav-btn"><i class="fas fa-plus-square"></i> Create Post</button>
+                <div class="settings-container">
+                    <button id="settingsBtn" class="settings-btn"><i class="fas fa-cog"></i> Settings</button>
+                    <div id="settingsMenu" class="settings-menu">
+                        <button type="button" class="darkToggle" aria-label="Toggle dark mode" onclick="settingsToggleTheme()">Toggle Dark Mode</button>
+                        <button type="button" id="logoutBtn" onclick="settingsLogout()">Logout</button>
+                        <button type="button" id="deleteAccountBtn" onclick="settingsDeleteAccount()">Delete Account</button>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -89,9 +96,7 @@
             <button id="viewProfileBtn" class="nav-btn"><i class="fas fa-user"></i> Profile</button>
             <button id="viewQuizBtn" class="nav-btn"><i class="fas fa-question-circle"></i> Quiz</button>
             <button id="roadmapsBtn" class="nav-btn"><i class="fas fa-map-signs"></i> Roadmaps</button>
-            <button id="createPostBtn" class="nav-btn"><i class="fas fa-plus-square"></i> Create Post</button>
-            <button id="searchPostsBtn" class="nav-btn"><i class="fas fa-search"></i> Search Posts</button>
-            <button id="alumniExperienceBtn" class="nav-btn"><i class="fas fa-user-tie"></i> Alumni</button>
+            <button id="alumniExperienceBtn" class="nav-btn"><i class="fas fa-user-tie"></i> Expert Advice</button>
         </nav>
 
         <main>
@@ -193,7 +198,7 @@
 
             <!-- Alumni Experience Section -->
             <section id="alumniExperience">
-              <h2 class="section-title"><i class="fas fa-user-tie"></i> Alumni Experiences</h2>
+              <h2 class="section-title"><i class="fas fa-user-tie"></i> Expert Advice</h2>
               <div id="alumniExperienceContainer"></div>
               <button id="addAlumniStoryBtn" class="fab">+</button>
             </section>
@@ -202,7 +207,7 @@
             <section id="alumni-start">
               <h2 class="section-title">Share Your Story</h2>
               <div class="alumni-prompt">
-                <h3>Are you an alumni or a senior student willing to share your experience?</h3>
+                <h3>Are you an expert or a senior student willing to share your experience?</h3>
                 <p>Your journey can help guide others. Please consider contributing.</p>
                 <div class="alumni-actions">
                   <button id="alumni-yes-btn" class="action-btn">Yes, I'll Share</button>
