@@ -10,13 +10,107 @@ const emojiMap = { Science: "🧪", Commerce: "💼", Arts: "🎨" };
 let activeSection = null;
 let isTransitioning = false;
 
-document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
+
+    // --- CUSTOM MODAL ---
+    const customModalOverlay = document.getElementById('customModal');
+    const customModalTitle = document.getElementById('customModalTitle');
+    const customModalMessage = document.getElementById('customModalMessage');
+    const customModalInput = document.getElementById('customModalInput');
+    const customModalOkBtn = document.getElementById('customModalOkBtn');
+    const customModalCancelBtn = document.getElementById('customModalCancelBtn');
+
+    if (customModalOverlay && customModalTitle && customModalMessage && customModalInput && customModalOkBtn && customModalCancelBtn) {
+        let modalResolve = null;
+
+        window.alert = function(message, title = "We are asking") {
+            customModalTitle.textContent = title;
+            customModalMessage.textContent = message;
+            customModalInput.style.display = 'none';
+            customModalCancelBtn.style.display = 'none';
+            customModalOverlay.style.display = 'flex';
+        };
+
+        window.confirm = function(message, title = "We are asking") {
+            return new Promise((resolve) => {
+                customModalTitle.textContent = title;
+                customModalMessage.textContent = message;
+                customModalInput.style.display = 'none';
+                customModalCancelBtn.style.display = 'inline-block';
+                customModalOverlay.style.display = 'flex';
+                modalResolve = resolve;
+            });
+        };
+
+        window.prompt = function(message, defaultValue = '', title = "We are asking") {
+            return new Promise((resolve) => {
+                customModalTitle.textContent = title;
+                customModalMessage.textContent = message;
+                customModalInput.value = defaultValue;
+                customModalInput.style.display = 'block';
+                customModalCancelBtn.style.display = 'inline-block';
+                customModalOverlay.style.display = 'flex';
+                modalResolve = resolve;
+            });
+        };
+
+        customModalOkBtn.addEventListener('click', () => {
+            customModalOverlay.style.display = 'none';
+            if (modalResolve) {
+                if (customModalInput.style.display === 'block') {
+                    modalResolve(customModalInput.value);
+                } else {
+                    modalResolve(true);
+                }
+                modalResolve = null;
+            }
+        });
+
+        customModalCancelBtn.addEventListener('click', () => {
+            customModalOverlay.style.display = 'none';
+            if (modalResolve) {
+                if (customModalInput.style.display === 'block') {
+                    modalResolve(null); // prompt returns null on cancel
+                } else {
+                    modalResolve(false); // confirm returns false on cancel
+                }
+                modalResolve = null;
+            }
+        });
+    }
+    // --- END CUSTOM MODAL ---
+
 
     // --- NEW GSAP-BASED UI LOGIC ---
 
-    const navButtons = document.querySelectorAll('.nav-btn');
-    const sections = document.querySelectorAll('main > section');
-    activeSection = document.querySelector('#posts'); // Default active section
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('main > section');
+        activeSection = document.querySelector('#posts'); // Default active section
+
+        // Posts submenu toggle
+        const postsGroup = document.querySelector('.nav-group');
+        const postsHeader = document.getElementById('postsMenuHeader');
+        if (postsHeader && postsGroup) {
+            postsHeader.addEventListener('click', (e) => {
+                // Only toggle the submenu, do not trigger navigation
+                e.stopPropagation();
+                postsGroup.classList.toggle('open');
+            });
+
+    const logoutBtnDirect = document.getElementById('logoutBtn');
+    if (logoutBtnDirect) {
+        logoutBtnDirect.addEventListener('click', () => {
+            const settingsMenuEl = document.getElementById('settingsMenu');
+            if (settingsMenuEl) settingsMenuEl.classList.remove('open');
+            try {
+                localStorage.removeItem('loggedIn');
+                localStorage.removeItem('currentUser');
+            } catch (_) {}
+            location.reload();
+        });
+    }
+
+        }
 
     // Initial animation for the app loading
     const initialLoad = () => {
@@ -26,6 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
             gsap.from(activeSection, { opacity: 0, y: 50, duration: 0.8, ease: 'power3.out', delay: 0.4 });
         }
     };
+    // (Removed showWelcome animation per request)
 
     // Translucent full-screen intro animation shown on every page load
     const showIntro = () => {
@@ -35,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Object.assign(overlay.style, {
             position: 'fixed',
             inset: '0',
-            background: 'cyan',
+            background: '#FFF8E7',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -58,10 +153,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const style = document.createElement('style');
         style.textContent = `
           /* Solid background for the intro overlay */
-          #introOverlay { position: fixed; isolation: isolate; background: cyan; display: flex; align-items: center; justify-content: center; text-align: center; }
+          #introOverlay { position: fixed; isolation: isolate; background: #FFF8E7; display: flex; align-items: center; justify-content: center; text-align: center; }
 
           /* Title styles (scoped) */
-          #introOverlay .ml4 { position: relative; margin: 0; text-align: center; font-weight: 900; font-size: clamp(28px, 6vw, 72px); color: #ffffff; text-shadow: 0 6px 24px rgba(0,0,0,0.35); }
+          #introOverlay .ml4 { position: relative; margin: 0; text-align: center; font-weight: 900; font-size: clamp(28px, 6vw, 72px); color: #000000; text-shadow: 0 6px 24px rgba(0,0,0,0.35); }
           #introOverlay .ml4 .letters { position: absolute; margin: auto; left: 0; right: 0; top: 0; bottom: 0; opacity: 0; }
         `;
 
@@ -99,17 +194,79 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // (Removed showWelcome animation per request)
-
     // Always show intro on load
     showIntro();
+    // Defensive: ensure intro overlay never blocks interactions
+    setTimeout(() => {
+        const overlay = document.getElementById('introOverlay');
+        if (overlay) {
+            overlay.style.pointerEvents = 'none';
+            try { overlay.remove(); } catch (_) {}
+        }
+    }, 5000);
 
-    navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            if (isTransitioning) return;
+    // Settings dropdown toggle
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsMenu = document.getElementById('settingsMenu');
+    if (settingsBtn && settingsMenu) {
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsMenu.classList.toggle('open');
+        });
+        // Handle clicks inside the menu reliably
+        settingsMenu.addEventListener('click', (e) => {
+            const logout = e.target.closest('#logoutBtn');
+            const del = e.target.closest('#deleteAccountBtn');
+            if (logout) {
+                console.log('[Settings] Logout clicked');
+                try {
+                    localStorage.removeItem('loggedIn');
+                    localStorage.removeItem('currentUser');
+                } catch (_) {}
+                settingsMenu.classList.remove('open');
+                location.reload();
+                return;
+            }
 
-            const buttonId = button.id;
-            let targetId;
+        });
+        // Close on click outside
+        document.addEventListener('click', (e) => {
+            if (!settingsMenu.contains(e.target) && e.target !== settingsBtn) {
+                settingsMenu.classList.remove('open');
+            }
+        });
+        // Note: do not stop propagation here; document-level delegation relies on bubbling
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') settingsMenu.classList.remove('open');
+        });
+    }
+
+    // Ensure Settings actions always work (delegation + close menu after click)
+    document.addEventListener('click', (e) => {
+        const settingsMenuEl = document.getElementById('settingsMenu');
+
+        // Logout
+        const logoutBtnEl = e.target.closest('#logoutBtn');
+        if (logoutBtnEl) {
+            try {
+                localStorage.removeItem('loggedIn');
+                localStorage.removeItem('currentUser');
+            } catch (_) {}
+            if (settingsMenuEl) settingsMenuEl.classList.remove('open');
+            location.reload();
+            return;
+        }
+
+
+    });
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (isTransitioning) return;
+
+                const buttonId = button.id;
+                let targetId;
 
             // New, more robust mapping
             switch (buttonId) {
@@ -133,6 +290,15 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const targetSection = document.getElementById(targetId);
+
+            // Auto-open/close Posts submenu based on destination
+            if (postsGroup) {
+                if (["posts", "createPost", "search"].includes(targetId)) {
+                    postsGroup.classList.add('open');
+                } else {
+                    postsGroup.classList.remove('open');
+                }
+            }
 
             if (targetSection && targetSection !== activeSection) {
                 isTransitioning = true;
@@ -208,26 +374,70 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (e) {}
     }
 
-    // Theme toggle
-    document.querySelectorAll(".darkToggle").forEach(button => {
-        button.addEventListener("click", () => {
-            const html = document.documentElement;
-            const current = html.getAttribute("data-theme");
-            const newTheme = current === "dark" ? "light" : "dark";
-            html.setAttribute("data-theme", newTheme);
-            localStorage.setItem("theme", newTheme);
-        });
-    });
-
     // Restore theme from localStorage
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
         document.documentElement.setAttribute("data-theme", savedTheme);
+        document.body.setAttribute("data-theme", savedTheme);
+        document.body.classList.toggle("theme-light", savedTheme === "light");
+        document.body.classList.toggle("theme-dark", savedTheme === "dark");
     }
 });
 
 
 // --- ALL EXISTING APPLICATION LOGIC IS PRESERVED BELOW ---
+
+// Global helpers for Settings menu actions (called from inline onclick)
+function settingsToggleTheme() {
+  const html = document.documentElement;
+  const body = document.body;
+  const current = html.getAttribute('data-theme') || 'dark';
+  const newTheme = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  body.setAttribute('data-theme', newTheme);
+  body.classList.toggle('theme-light', newTheme === 'light');
+  body.classList.toggle('theme-dark', newTheme === 'dark');
+  try { localStorage.setItem('theme', newTheme); } catch (_) {}
+  const m = document.getElementById('settingsMenu');
+  if (m) m.classList.remove('open');
+}
+
+async function settingsLogout() {
+  const confirmLogout = await confirm('Are you sure you want to logout?');
+  if (!confirmLogout) {
+      const m = document.getElementById('settingsMenu');
+      if (m) m.classList.remove('open');
+      return;
+  }
+  try {
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('currentUser');
+  } catch (_) {}
+  const m = document.getElementById('settingsMenu');
+  if (m) m.classList.remove('open');
+  location.reload();
+}
+
+async function settingsDeleteAccount() {
+  const confirmDelete = await confirm('Are you sure you want to permanently delete your account? This cannot be undone.');
+  if (!confirmDelete) {
+    const m = document.getElementById('settingsMenu');
+    if (m) m.classList.remove('open');
+    return;
+  }
+  const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+  if (currentUser) {
+    let users = JSON.parse(localStorage.getItem('users') || '[]');
+    users = users.filter(u => u.email !== currentUser.email);
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+  localStorage.removeItem('loggedIn');
+  localStorage.removeItem('currentUser');
+  alert('Your account has been deleted permanently.');
+  const m = document.getElementById('settingsMenu');
+  if (m) m.classList.remove('open');
+  location.reload();
+}
 
 /**
  * Handles the registration form submission.
@@ -261,7 +471,7 @@ document.getElementById("registerForm").addEventListener("submit", function(e) {
   // Mark that this device has completed sign-up once
   try { localStorage.setItem('hasSignedUp', 'true'); } catch (_) {}
 
-  alert("Registration successful! Please log in.");
+  alert("Registration successful! Please log in.", "Success");
   document.getElementById('authForm').classList.remove("right-panel-active");
 });
 
@@ -329,7 +539,7 @@ if (backToLogin) {
 
 const forgotPasswordForm = document.getElementById("forgotPasswordForm");
 if (forgotPasswordForm) {
-    forgotPasswordForm.addEventListener("submit", function(e) {
+    forgotPasswordForm.addEventListener("submit", async function(e) {
       e.preventDefault();
       const email = this.querySelector('input[placeholder="Email"]').value.trim();
       let users = JSON.parse(localStorage.getItem("users")) || [];
@@ -340,7 +550,7 @@ if (forgotPasswordForm) {
         return;
       }
 
-      const newPassword = prompt("Enter your new password:");
+      const newPassword = await prompt("Enter your new password:");
       if (newPassword) {
         users[userIndex].password = newPassword;
         localStorage.setItem("users", JSON.stringify(users));
@@ -544,7 +754,7 @@ function renderPosts(data, targetFeed = document.getElementById("postFeed")) {
   });
 }
 
-function editPost(id) {
+async function editPost(id) {
   const posts = JSON.parse(localStorage.getItem("posts")) || [];
   const post = posts.find(p => p.id === id);
   if (!post) return;
@@ -555,8 +765,8 @@ function editPost(id) {
     return;
   }
 
-  const newTitle = prompt("Edit title:", post.title);
-  const newContent = prompt("Edit content:", post.content);
+  const newTitle = await prompt("Edit title:", post.title);
+  const newContent = await prompt("Edit content:", post.content);
   if (newTitle !== null) post.title = newTitle;
   if (newContent !== null) post.content = newContent;
 
@@ -615,7 +825,7 @@ function addComment(e, postId) {
   }
 }
 
-function editComment(postId, commentIndex) {
+async function editComment(postId, commentIndex) {
   const posts = JSON.parse(localStorage.getItem("posts")) || [];
   const post = posts.find(p => p.id === postId);
   if (!post) return;
@@ -629,7 +839,7 @@ function editComment(postId, commentIndex) {
   }
 
   const commentText = (typeof comment === 'string') ? comment : comment.text;
-  const updatedText = prompt("Edit comment:", commentText);
+  const updatedText = await prompt("Edit comment:", commentText);
   if (updatedText !== null) {
     comment.text = updatedText;
     localStorage.setItem("posts", JSON.stringify(posts));
@@ -854,50 +1064,7 @@ document.getElementById("updateProfileBtn").addEventListener("click", function()
   }
 });
 
-document.getElementById("deleteAccountBtn").addEventListener("click", () => {
-  const confirmDelete = confirm("Are you sure you want to permanently delete your account? This cannot be undone.");
-  if (!confirmDelete) return;
 
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  if (!currentUser) {
-    alert("No account found to delete.");
-    return;
-  }
-
-  let users = JSON.parse(localStorage.getItem("users")) || [];
-  users = users.filter(u => u.email !== currentUser.email);
-  localStorage.setItem("users", JSON.stringify(users));
-
-  localStorage.removeItem("loggedIn");
-  localStorage.removeItem("currentUser");
-
-  alert("Your account has been deleted permanently.");
-  // Mobile-first: After deletion, redirect phones to the Sign Up panel
-  try {
-    const isMobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
-    if (isMobile) {
-      // Ensure app switches to auth view without reload
-      document.body.classList.remove('logged-in');
-      // Optionally clear the flag so mobile defaults to Sign Up next time as well
-      try { localStorage.removeItem('hasSignedUp'); } catch (_) {}
-      const authContainer = document.getElementById('authForm');
-      if (authContainer) {
-        authContainer.classList.add('right-panel-active'); // show Sign Up panel
-      }
-      // Hide main app if still visible
-      const mainEl = document.getElementById('mainApp');
-      if (mainEl) {
-        // Rely on CSS tied to logged-in class; no extra style changes required
-      }
-      // Scroll to top to bring auth into view
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return; // Do not reload on mobile
-    }
-  } catch (_) {}
-
-  // Desktop and larger screens: keep existing behavior
-  location.reload();
-});
 
 const roadmapsData = [
     { title: "Software Engineer", steps: ["Complete 12th Grade with a focus on Math and Physics.", "Pursue a Bachelor's degree in Computer Science or a related field.", "Learn core programming languages like Python, Java, or C++.", "Build personal projects and contribute to open-source.", "Complete internships to gain practical experience.", "Prepare for technical interviews (Data Structures & Algorithms).", "Apply for entry-level software engineering roles."] },
@@ -1027,7 +1194,7 @@ function renderAlumniStories() {
 
         card.innerHTML = `
             <h3>Stream: ${story.stream}</h3>
-            ${story.alumniName ? `<p><strong>Alumni Name:</strong> ${story.alumniName}</p>` : ''}
+            ${story.alumniName ? `<p><strong>Expert Name:</strong> ${story.alumniName}</p>` : ''}
             <p><strong>Why this stream?</strong> ${story.whyStream}</p>
             <p><strong>Any regrets?</strong> ${story.regret}</p>
             <p><strong>Current Status:</strong> ${story.currentStatus}</p>
@@ -1038,7 +1205,7 @@ function renderAlumniStories() {
     });
 }
 
-function editAlumniStory(id) {
+async function editAlumniStory(id) {
     let stories = JSON.parse(localStorage.getItem("alumniStories")) || [];
     const storyIndex = stories.findIndex(s => s.id === id);
 
@@ -1052,10 +1219,10 @@ function editAlumniStory(id) {
         return;
     }
 
-    const newWhyStream = prompt("Edit 'Why this stream?':", story.whyStream);
-    const newRegret = prompt("Edit 'Any regrets?':", story.regret);
-    const newCurrentStatus = prompt("Edit 'Current Status?':", story.currentStatus);
-    const newAlumniName = prompt("Edit 'Alumni Name?':", story.alumniName);
+    const newWhyStream = await prompt("Edit 'Why this stream?':", story.whyStream);
+    const newRegret = await prompt("Edit 'Any regrets?':", story.regret);
+    const newCurrentStatus = await prompt("Edit 'Current Status?':", story.currentStatus);
+    const newAlumniName = await prompt("Edit 'Expert Name?':", story.alumniName);
 
     if (newWhyStream !== null) story.whyStream = newWhyStream;
     if (newRegret !== null) story.regret = newRegret;
