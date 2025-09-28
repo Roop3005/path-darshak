@@ -192,17 +192,16 @@ document.addEventListener("DOMContentLoaded", () => {
         initialLoad(); // Trigger app load animation
     } else {
         document.body.classList.remove("logged-in");
-        // Mobile-first auth flow: show Sign Up first for users who haven't registered yet
+        // Mobile-only: always default to Sign Up panel when logged out
         try {
             const isMobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
-            const hasSignedUp = localStorage.getItem('hasSignedUp') === 'true';
             const authContainer = document.getElementById('authForm');
             if (authContainer) {
-                if (isMobile && !hasSignedUp) {
+                if (isMobile) {
                     // Show Sign Up panel first on phones
                     authContainer.classList.add('right-panel-active');
                 } else {
-                    // Default to Sign In
+                    // Default to Sign In on desktop/tablet
                     authContainer.classList.remove('right-panel-active');
                 }
             }
